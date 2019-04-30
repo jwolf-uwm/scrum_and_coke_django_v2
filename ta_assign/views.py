@@ -42,3 +42,34 @@ class Logout(View):
         models.User.objects.filter(email=username).update(isLoggedOn=False)
         request.session.pop("email", None)
         return redirect("Login1")
+
+
+class CreateAccount(View):
+
+    def get(self, request):
+
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        return render(request, 'main/create_account.html')
+
+    def post(self, request):
+
+        account_email = request.POST["email"]
+        account_password = request.POST["password"]
+        account_type = request.POST["type"]
+        response = Commands.create_account(account_email, account_password, account_type)
+
+        if response == "Account Created!":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return render(request, 'main/create_account.html')
