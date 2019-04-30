@@ -106,7 +106,7 @@ class AssignInstructorToCourse(View):
         command_course = "CS" + course_id + "-" + course_section
         response = Commands.assign_instructor(email1, command_course)
 
-        if response == "command successful":
+        if response == "Instructor Assigned!":
             messages.success(request, response)
         else:
             messages.error(request, response)
@@ -131,11 +131,10 @@ class AssignTAToCourse(View):
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
         command_input = "assign_ta " + email + " CS" + course_id + "-" + course_section
-        get_workin = WebCmdHandler()
-        response = get_workin.parse_command(request.session["email"], command_input)
-        if response == "command successful":
+        response = Commands.assign_ta(email, command_input)
+        if response == "TA Assigned!":
             messages.success(request, response)
         else:
             messages.error(request, response)
-        return render(request, 'main/assign_instructor.html')
+        return render(request, 'main/assign_ta.html')
 # View TA Assign

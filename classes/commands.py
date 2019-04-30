@@ -127,5 +127,5 @@ class Commands:
         ta_course.TA = check_ta
         ta_course.course = check_course
         ta_course.save()
-        return "TA Assigned"
+        return "TA Assigned!"
     # View TA Assign Commands
