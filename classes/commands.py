@@ -103,10 +103,29 @@ class Commands:
         if check_course is None:
             return "no such course"
 
-        check_course.instructor = check_ins
-        check_course.save()
+        models.Course.objects.filter(course_id=course).update(instructor=email)
 
         return "Instructor Assigned!"
-    # Assign TA Commands
 
+    # Assign TA Commands
+    @staticmethod
+    def assign_ta(email, course):
+        try:
+            check_ta = models.User.objects.get(email=email, type="ta")
+        except models.User.DoesNotExist:
+            check_ta = None
+        if check_ta is None:
+            return "no such ta"
+        try:
+            check_course = models.Course.objects.get(course_id=course)
+        except models.Course.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such course"
+
+        ta_course = models.TACourse()
+        ta_course.TA = check_ta
+        ta_course.course = check_course
+        ta_course.save()
+        return "TA Assigned"
     # View TA Assign Commands
