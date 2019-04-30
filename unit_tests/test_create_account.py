@@ -110,7 +110,8 @@ class TestCreateAccount(TestCase):
 
     def test_create_account_invalid_parameter_wrong_arg_types(self):
         # int args
-        self.assertEquals(Commands.create_account(7, 8, 9), "Invalid account type.")
+        with self.assertRaises(AttributeError):
+            Commands.create_account(7, 8, 9)
         with self.assertRaises(models.User.DoesNotExist):
             models.User.objects.get(email=7)
 
@@ -118,3 +119,7 @@ class TestCreateAccount(TestCase):
         # email taken
         Commands.create_account("FredClaus@uwm.edu", "santa_bro", "ta")
         self.assertEquals(Commands.create_account("FredClaus@uwm.edu", "santa_bro", "ta"), "Email address taken.")
+
+    def test_bad_password(self):
+        self.assertEquals(Commands.create_account("bad_password@uwm.edu", "", "ta"), "Bad password.")
+
