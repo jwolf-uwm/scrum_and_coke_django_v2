@@ -47,9 +47,6 @@ class Commands:
         # returns False if account was unable to be created
         # throws exceptions if you do it wrong
 
-        if account_type != "instructor" and account_type != "ta":
-            return "Invalid account type."
-
         try:
             find_email = models.User.objects.get(email=email)
         except models.User.DoesNotExist:
@@ -67,6 +64,12 @@ class Commands:
         # figure out how it'd even show up, but if it does someday, we'll find out
         except IndexError:
             return "Bad email address."
+
+        if password == "":
+            return "Bad password."
+
+        if account_type != "instructor" and account_type != "ta":
+            return "Invalid account type."
 
         some_guy = models.User()
         some_guy.email = email
