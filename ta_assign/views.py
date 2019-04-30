@@ -8,11 +8,13 @@ from ta_assign import models
 # Create your views here.
 
 
+# Index/Homepage
 class Index(View):
     def get(self, request):
         return render(request, 'main/index.html')
 
 
+# Login
 class Login(View):
     def get(self, request):
         if request.session.get("email"):
@@ -34,6 +36,7 @@ class Login(View):
         return redirect("index1")
 
 
+# Logout
 class Logout(View):
     def get(self, request):
         if not request.session.get("email"):
@@ -73,3 +76,17 @@ class CreateAccount(View):
             messages.error(request, response)
 
         return render(request, 'main/create_account.html')
+
+# Create Course
+
+# Access Info
+
+# Edit Account
+
+# Edit Info
+
+# Assign Instructor
+
+# Assign TA
+
+# View TA Assign

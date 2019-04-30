@@ -78,3 +78,17 @@ class Commands:
         some_guy.save()
 
         return "Account created!"
+
+    # Create Course Commands
+
+    # Access Info Commands
+
+    # Edit Account Commands
+
+    # Edit Info Commands
+
+    # Assign Instructor Commands
+
+    # Assign TA Commands
+
+    # View TA Assign Commands
