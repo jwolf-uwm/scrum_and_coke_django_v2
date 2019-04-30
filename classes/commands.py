@@ -3,7 +3,7 @@ from ta_assign import models
 
 class Commands:
 
-    # commands organized by page they are found on
+    # commands organized by page menu order
 
     # Login commands
     # this appears to be unused in the view
@@ -47,6 +47,9 @@ class Commands:
         # returns False if account was unable to be created
         # throws exceptions if you do it wrong
 
+        if account_type != "instructor" and account_type != "ta":
+            return "Invalid account type."
+
         try:
             find_email = models.User.objects.get(email=email)
         except models.User.DoesNotExist:
@@ -60,6 +63,8 @@ class Commands:
         try:
             if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
                 return "Email address must be uwm address."
+        # I'm not sure why I wrote this exception, I don't test for it and can't
+        # figure out how it'd even show up, but if it does someday, we'll find out
         except IndexError:
             return "Bad email address."
 
