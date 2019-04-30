@@ -112,6 +112,7 @@ class AccessInfo(View):
 
 # Assign Instructor
 
+
 class AssignInstructorToCourse(View):
     def get(self, request):
         if not request.session.get("email"):
