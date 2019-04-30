@@ -1,0 +1,41 @@
+body {
+    background: lightgray;
+    font-family: "Trebuchet MS";
+}
+
+.alert {
+    color: red;
+}
+
+.menu {
+    background: black;
+    color: white;
+    padding: 5px 5px;
+    font-weight: bold;
+}
+
+.menu a:link {
+    color: white;
+}
+
+.menu a:visited {
+    color: white;
+}
+
+.menu a:hover {
+    color: #33fff0;
+}
+
+.menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu li {
+  display: inline;
+}
+
+.font_help {
+    font-family: "Trebuchet MS";
+}

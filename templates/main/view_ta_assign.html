@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>View TA Assignments</h1>
+
+    {% for message in messages %}
+        <pre><p class="font_help">{{ message }}</p></pre>
+    {% endfor %}
+
+{% endblock content %}

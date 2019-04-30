@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>Create Account</h1>
+    <form method="POST" id="create_account_form">
+        {% csrf_token %}
+        <label for="email">Email address:</label>
+        <input type="text" id="email" name="email">
+        <br><br>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password">
+        <br><br>
+        <label for="type">Account Type:</label>
+        <select name="type" form="create_account_form">
+            <option value="instructor">Instructor</option>
+            <option value="ta">TA</option>
+        </select>
+        <br><br>
+        <input type="submit">
+    </form>
+
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+{% endblock content %}

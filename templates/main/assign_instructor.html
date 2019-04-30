@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+        <h1>Assign Instructor</h1>
+        <form method="POST" id="assign_instructor_form">
+            {% csrf_token %}
+             <label for="name">Instructor email:</label>
+            <input type="text" id="email" name="email">
+            <br><br>
+            <label for="course_id">Enter the Course ID:</label>
+            <br>
+            CS
+            <input type="number" id="course_id" name="course_id" min="101" max="999" required>
+            <label for="course_section">-</label>
+            <input type="number" id="course_section" name="course_section" placeholder="401" min="401" max="410" required>
+            <br><br>
+            <br><br>
+            <input type="submit">
+        </form>
+        <p>{{ message }}</p>
+  {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+{% endblock content %}
