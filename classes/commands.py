@@ -82,6 +82,63 @@ class Commands:
     # Create Course Commands
 
     # Access Info Commands
+    @staticmethod
+    def access_info():
+        # Jeff's method
+        # Usage: access_info()
+        # returns a string of all users/courses in the system
+        # with appropriate linebreaks for display
+        # TODO: REWRITE TO MODEL LIST
+
+        string_list = "Administrator:\n"
+
+        admins = models.User.objects.filter(type="administrator")
+        for admin in admins:
+            string_list = string_list + admin.name + " | " + admin.email + " | " + \
+                          str(admin.phone) + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "Supervisor:\n"
+
+        supers = models.User.objects.filter(type="supervisor")
+        for supervi in supers:
+            string_list = string_list + supervi.name + " | " + supervi.email + " | " + \
+                          str(supervi.phone) + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "Instructors:\n"
+
+        instructs = models.User.objects.filter(type="instructor")
+        for instruct in instructs:
+            string_list = string_list + instruct.name + " | " + instruct.email + " | " + \
+                          str(instruct.phone) + "\n"
+
+            for courses in models.Course.objects.all():
+                if courses.instructor == instruct.email:
+                    string_list = string_list + "\tCourse: " + courses.course_id + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "\n"
+
+        string_list = string_list + "TAs:\n"
+
+        tee_ayys = models.User.objects.filter(type="ta")
+        for tee_ayy in tee_ayys:
+            string_list = string_list + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone) + \
+                          "\n"
+
+            for ta_courses in models.TACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "\n"
+
+        string_list = string_list + "Courses:\n"
+        courses = models.Course.objects.all()
+        for course in courses:
+            string_list = string_list + course.course_id + "\n"
+        return string_list
 
     # Edit Account Commands
 
