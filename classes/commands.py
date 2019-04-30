@@ -88,7 +88,25 @@ class Commands:
     # Edit Info Commands
 
     # Assign Instructor Commands
+    @staticmethod
+    def assign_instructor(email, course):
+        try:
+            check_ins = models.User.objects.get(email=email, type="instructor")
+        except models.User.DoesNotExist:
+            check_ins = None
+        if check_ins is None:
+            return "no such instructor"
+        try:
+            check_course = models.Course.objects.get(course_id=course)
+        except models.Course.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such course"
 
+        check_course.instructor = check_ins
+        check_course.save()
+
+        return "Instructor Assigned!"
     # Assign TA Commands
 
     # View TA Assign Commands
