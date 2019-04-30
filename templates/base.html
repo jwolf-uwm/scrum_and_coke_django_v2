@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TA Assigninator 5000</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>TA Assigninator 5000</h1>
+    <ul class="menu">
+        <li class="menu"><a href="/index">Home</a></li> |
+        <li class="menu"><a href="/login">Login</a></li> |
+        <li class="menu"><a href="/logout">Logout</a></li> |
+        <li class="menu"><a href="/create_account">Create Account</a></li> |
+        <li class="menu"><a href="/create_course">Create Course</a></li> |
+        <li class="menu"><a href="/access_info">Access Info</a></li> |
+        <li class="menu"><a href="/edit_account">Edit Account</a></li> |
+        <li class="menu"><a href="/edit_info">Edit Info</a></li> |
+        <li class="menu"><a href="/assign_instructor">Assign Instructor</a></li> |
+        <li class="menu"><a href="/assign_ta">Assign TA</a></li> |
+        <li class="menu"><a href="/view_ta_assign">View TA Assign</a></li>
+    </ul>
+
+    {% block content %}{% endblock content %}
+</body>
+</html>

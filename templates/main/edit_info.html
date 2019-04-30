@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>Edit Info</h1>
+
+    <p>
+        Current Email: {{ some_email }} <br>
+        Current Password: {{ some_password }} <br>
+        Current Name: {{ some_name }} <br>
+        Current Phone: {{ some_phone }} <br>
+    </p>
+
+    <form method="POST" id="edit_info_form">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email">
+        <br><br>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password">
+        <br><br>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <br><br>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone">
+        <br><br>
+        <input type="submit">
+    </form>
+
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+{% endblock content %}
