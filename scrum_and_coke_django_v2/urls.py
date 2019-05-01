@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from ta_assign.views import Index, Login, Logout, CreateAccount, AccessInfo, CreateCourse, EditAccount, EditInfo,\
-    AssignInstructorToCourse, AssignTAToCourse
+    AssignInstructorToCourse, AssignTAToCourse, ViewTAAssign
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +31,5 @@ urlpatterns = [
     path('assign_ta/', AssignTAToCourse.as_view(), name='AssignTACourse1'),
     path('assign_instructor/', AssignInstructorToCourse.as_view(), name='AssignInstructor1'),
     path('edit_info/', EditInfo.as_view(), name='EditInfo1'),
+    path('view_ta_assign/', ViewTAAssign.as_view(), name='ViewTAAssign1'),
 ]
