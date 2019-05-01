@@ -43,9 +43,6 @@ class Commands:
     def create_account(email, password, account_type):
         # Jeff's method
         # Usage: (string: email, string: password, string: account_type)
-        # returns True if account successfully created in DB
-        # returns False if account was unable to be created
-        # throws exceptions if you do it wrong
 
         try:
             find_email = models.User.objects.get(email=email)
@@ -209,9 +206,105 @@ class Commands:
             return "The entered data field does not exist"
 
     # Edit Info Commands
+    @staticmethod
+    def change_password(email, new):
+        if new == "":
+            return "Bad password."
+
+        models.User.objects.filter(email=email).update(password=new)
+        return "Password changed."
+
+    @staticmethod
+    def change_email(email, address):
+        parse_at = address.split("@")
+
+        try:
+            if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
+                return "Email address must be uwm address."
+        except ValueError:
+            return "Bad email address."
+
+        try:
+            find_email = models.User.objects.get(email=address)
+        except models.User.DoesNotExist:
+            find_email = "none"
+
+        if find_email != "none":
+            return "Email address taken."
+
+        models.User.objects.filter(email=email).update(email=address)
+        return "Email address changed."
+
+    @staticmethod
+    def change_name(email, name):
+        models.User.objects.filter(email=email).update(name=name)
+        return "Name changed."
+
+    @staticmethod
+    def change_phone(email, phone):
+        parse_phone = phone.split(".")
+        invalid = "Invalid phone format."
+        if len(parse_phone) != 3:
+            return invalid
+        if not parse_phone[0].isdigit() or not parse_phone[1].isdigit() or not parse_phone[2].isdigit():
+            return invalid
+        if len(parse_phone[0]) != 3 or len(parse_phone[1]) != 3 or len(parse_phone[2]) != 4:
+            return invalid
+
+        models.User.objects.filter(email=email).update(phone=phone)
+        return "Phone number changed."
+
+    # View Info Commands
+    @staticmethod
+    def view_info(email):
+
+        this_guy = models.User.objects.get(email=email)
+        info_list = [this_guy.email, this_guy.password, this_guy.name, this_guy.phone]
+
+        return info_list
 
     # Assign Instructor Commands
+    @staticmethod
+    def assign_instructor(email, course):
+        try:
+            check_ins = models.User.objects.get(email=email, type="instructor")
+        except models.User.DoesNotExist:
+            check_ins = None
+        if check_ins is None:
+            return "no such instructor"
+        try:
+            check_course = models.Course.objects.get(course_id=course)
+        except models.Course.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such course"
+
+        models.Course.objects.filter(course_id=course).update(instructor=email)
+
+        return "Instructor Assigned!"
 
     # Assign TA Commands
+    @staticmethod
+    def assign_ta(email, course):
+        try:
+            check_ta = models.User.objects.get(email=email, type="ta")
+        except models.User.DoesNotExist:
+            check_ta = None
+        if check_ta is None:
+            return "no such ta"
+        try:
+            check_course = models.Course.objects.get(course_id=course)
+        except models.Course.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such course"
 
+        ta_course = models.TACourse()
+        ta_course.TA = check_ta
+        ta_course.course = check_course
+        ta_course.save()
+        return "TA Assigned!"
     # View TA Assign Commands
+
+    # Read Public Contact Info Commands
+
