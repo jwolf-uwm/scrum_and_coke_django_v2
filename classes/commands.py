@@ -15,8 +15,6 @@ class Commands:
         temp = None
 
         for i in people:
-            if i.isLoggedOn is True:
-                return "User already logged in"
             if i.email == email:
                 temp = i
 
@@ -25,7 +23,7 @@ class Commands:
         elif temp.email != email or temp.password != password:
             return "Invalid login info"
         models.User.objects.filter(email=email).update(isLoggedOn=True)
-        return
+        return "Login successful"
 
     # Logout commands
     # this also appears unused in the view
