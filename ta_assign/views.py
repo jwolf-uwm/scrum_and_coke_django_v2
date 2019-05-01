@@ -272,7 +272,7 @@ class AssignTAToCourse(View):
         email = request.POST["email"]
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
-        command_input = "assign_ta " + email + " CS" + course_id + "-" + course_section
+        command_input = "CS" + course_id + "-" + course_section
         response = Commands.assign_ta(email, command_input)
         if response == "TA Assigned!":
             messages.success(request, response)
