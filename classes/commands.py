@@ -323,7 +323,26 @@ class Commands:
             string_list = string_list + course.course_id + " \n"
 
         return string_list
+
     # View TA Assign Commands
+
+    @staticmethod
+    def view_ta_assign():
+        string_list = ""
+        tee_ayys = models.User.objects.filter(type="ta")
+        for tee_ayy in tee_ayys:
+            string_list = string_list + "TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + tee_ayy.phone + "\n"
+
+            for ta_courses in models.TACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
+
+                for ta_lab in models.Lab.objects.all():
+                    if ta_lab.TA == tee_ayy.email:
+                        string_list = string_list + "Lab: " + ta_lab.section_id + "\n"
+                string_list = string_list + "\n"
+
+        return string_list
 
     # Read Public Contact Info Commands
     @staticmethod
