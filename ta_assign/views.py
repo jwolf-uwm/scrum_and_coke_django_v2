@@ -285,4 +285,25 @@ class AssignTAToCourse(View):
         else:
             messages.error(request, response)
         return render(request, 'main/assign_ta.html')
+
+# View course assignments
+
+
+class ViewCourseAssignments(View):
+
+    def get(self, request):
+
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "instructor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        response = Commands.view_course_assignments(request.session.get("email"))
+        messages.success(request, response)
+        return render(request, 'main/view_course_assignments.html')
 # View TA Assign
