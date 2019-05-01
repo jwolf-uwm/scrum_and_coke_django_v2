@@ -82,7 +82,35 @@ class CreateAccount(View):
 
         return render(request, 'main/create_account.html')
 
+
 # Create Course
+class CreateCourse(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        return render(request, 'main/create_course.html')
+
+    def post(self, request):
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        num_labs = request.POST["num_labs"]
+
+        response = Commands.create_course("CS"+course_id+"-"+course_section, num_labs)
+
+        if response == "Course has been created successfully.":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
 
 
 # Access Info
@@ -105,7 +133,36 @@ class AccessInfo(View):
         messages.success(request, response)
         return render(request, 'main/access_info.html')
 
+
 # Edit Account
+class EditAccount(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        return render(request, 'main/edit_account.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        field = request.POST["field"]
+        data = request.POST["data"]
+
+        response = Commands.edit_account(email, field, data)
+
+        if response == "Command successful.":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return render(request, 'main/edit_account.html')
+
 
 # Edit Info
 
