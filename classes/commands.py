@@ -80,6 +80,35 @@ class Commands:
         return "Account created!"
 
     # Create Course Commands
+    @staticmethod
+    def create_course(course_id, num_labs):
+        if len(course_id) != 9:
+            return "course_id is the wrong size to be of the right form (CS###-###)"
+        if course_id[0:2] != "CS":
+            return "course_id is not a CS course (CS###-###)"
+        if not course_id[2:5].isdigit():
+            return "The course number contains an invalid digit (CS###-###)"
+        if course_id[5] != "-":
+            return "The course and section number should be separated by a hyphen (CS###-###)"
+        if not course_id[6:].isdigit():
+            return "The section number contains an invalid digit (CS###-###)"
+        try:
+            if int(num_labs) < 0 or int(num_labs) > 5:
+                return "The number of lab sections should be positive and not exceed 5"
+        except ValueError:
+            return "num_labs must be an valid number"
+        try:
+            find_course = models.Course.objects.get(course_id=course_id)
+        except models.Course.DoesNotExist:
+            find_course = "none"
+        if find_course != "none":
+            return "Course already exists"
+
+        some_course = models.Course()
+        some_course.course_id = course_id
+        some_course.num_labs = num_labs
+        some_course.save()
+        return "Course created successfully"
 
     # Access Info Commands
     @staticmethod
@@ -141,6 +170,43 @@ class Commands:
         return string_list
 
     # Edit Account Commands
+    @staticmethod
+    def edit_account(email, field, content):
+        try:
+            models.User.objects.get(email=email)
+        except models.User.DoesNotExist:
+            return "Entered user does not exist"
+
+        if field == "email":
+            parse_at = content.split("@")
+            try:
+                if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
+                    return "Entered email does not end in uwm.edu"
+            except ValueError:
+                return "Entered email is not of the correct form"
+            models.User.objects.filter(email=email).update(email=content)
+            return "User has been updated successfully"
+
+        elif field == "password":
+            models.User.objects.filter(email=email).update(password=content)
+            return "User has been updated successfully"
+
+        elif field == "phone":
+            parse_phone = content.split(".")
+            if len(parse_phone) != 3:
+                return "Phone number is not of the correct form (###.###.####)"
+            if not parse_phone[0].isdigit() or not parse_phone[1].isdigit() or not parse_phone[2].isdigit():
+                return "Phone number is not of the correct form (###.###.####)"
+            if len(parse_phone[0]) != 3 or len(parse_phone[1]) != 3 or len(parse_phone[2]) != 4:
+                return "Phone number is not of the correct form (###.###.####)"
+            models.User.objects.filter(email=email).update(phone=content)
+            return "User has been updated successfully"
+
+        elif field == "name":
+            models.User.objects.filter(email=email).update(name=content)
+            return "User has been updated successfully"
+        else:
+            return "The entered data field does not exist"
 
     # Edit Info Commands
 
