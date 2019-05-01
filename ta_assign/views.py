@@ -108,7 +108,7 @@ class CreateCourse(View):
         for i in range(num):
             lab = models.Lab()
             lab.section_id = 801 + i
-            lab.course_id = course_id
+            lab.course_id = "CS"+course_id+"-"+course_section
             lab.save()
 
         if response == "Course has been created successfully.":
@@ -286,12 +286,12 @@ class AssignTAToCourse(View):
             messages.error(request, response)
         return render(request, 'main/assign_ta.html')
 
-# View TA Assign
+# View course assignments
 
 
-class ViewTAAssign(View):
-    @staticmethod
-    def get(request):
+class ViewCourseAssignments(View):
+
+    def get(self, request):
 
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
@@ -299,10 +299,11 @@ class ViewTAAssign(View):
 
         account_type = request.session.get("type")
 
-        if not account_type == "instructor" and not account_type == "ta":
+        if not account_type == "instructor":
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        response = Commands.view_ta_assign()
+        response = Commands.view_course_assignments(request.session.get("email"))
         messages.success(request, response)
-        return render(request, 'main/view_ta_assign.html')
+        return render(request, 'main/view_course_assignments.html')
+# View TA Assign
