@@ -328,4 +328,9 @@ class Commands:
     # View TA Assign Commands
 
     # Read Public Contact Info Commands
+    @staticmethod
+    def read_public(email):
 
+
+
+        return
