@@ -305,3 +305,6 @@ class Commands:
         ta_course.save()
         return "TA Assigned!"
     # View TA Assign Commands
+
+    # Read Public Contact Info Commands
+
