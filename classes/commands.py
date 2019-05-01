@@ -304,18 +304,12 @@ class Commands:
         ta_course.course = check_course
         ta_course.save()
         return "TA Assigned!"
-
     # View TA Assign Commands
+
+    # Read Public Contact Info Commands
     @staticmethod
-    def view_ta_assign():
-        string_list = ""
-        tee_ayys = models.User.objects.filter(type="ta")
-        for tee_ayy in tee_ayys:
-            string_list = string_list + "TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + tee_ayy.phone + "\n"
+    def read_public(email):
 
-            for ta_courses in models.TACourse.objects.all():
-                if ta_courses.TA.email == tee_ayy.email:
-                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
-            string_list = string_list + "\n"
 
-        return string_list
+
+        return
