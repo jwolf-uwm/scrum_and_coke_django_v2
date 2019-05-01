@@ -4,7 +4,7 @@ from django.contrib.messages import get_messages
 from ta_assign import models
 
 
-class EditInfoTests(TestCase):
+class EditAccountTests(TestCase):
 
     def setUp(self):
         admin = models.User()
