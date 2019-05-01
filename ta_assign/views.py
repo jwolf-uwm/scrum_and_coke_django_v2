@@ -165,7 +165,67 @@ class EditAccount(View):
 
 
 # Edit Info
+class EditInfo(View):
 
+    @staticmethod
+    def get(request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        some_guy = models.User.objects.get(email=request.session.get("email"))
+
+        return render(request, 'main/edit_info.html', {"some_email": some_guy.email, "some_password": some_guy.password,
+                                                       "some_name": some_guy.name, "some_phone": some_guy.phone})
+
+    @staticmethod
+    def post(request):
+        email = request.POST["email"]
+        password = request.POST["password"]
+        name = request.POST["name"]
+        phone = request.POST["phone"]
+        pick_anything = False
+
+        if email != "":
+            pick_anything = True
+            response = Commands.change_email(request.session["email"], email)
+            if response == "Email address changed.":
+                messages.success(request, response)
+                request.session["email"] = email
+            else:
+                messages.error(request, response)
+
+        if password != "":
+            pick_anything = True
+            response = Commands.change_password(request.session["email"], password)
+
+            if response == "Password changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if name != "":
+            pick_anything = True
+            response = Commands.change_name(request.session["email"], name)
+
+            if response == "Name changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if phone != "":
+            pick_anything = True
+            response = Commands.change_phone(request.session["email"], phone)
+
+            if response == "Phone number changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if not pick_anything:
+            messages.error(request, "You should pick something to change.")
+
+        return redirect("EditInfo1")
 
 # Assign Instructor
 
