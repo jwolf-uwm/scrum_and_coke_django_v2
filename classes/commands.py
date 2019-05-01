@@ -304,4 +304,14 @@ class Commands:
         ta_course.course = check_course
         ta_course.save()
         return "TA Assigned!"
+
+    # View course assignments
+    @staticmethod
+    def view_course_assignments(instructor):
+        string_list = ""
+        courses = models.Course.objects.filter(instructor=instructor)
+        for course in courses:
+            string_list = string_list + course.course_id + " \n"
+
+        return string_list
     # View TA Assign Commands
