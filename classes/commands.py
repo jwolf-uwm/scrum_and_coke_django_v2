@@ -223,7 +223,7 @@ class Commands:
 
         try:
             if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
-                "Email address must be uwm address."
+                return "Email address must be uwm address."
         except ValueError:
             return "Bad email address."
 
@@ -233,7 +233,7 @@ class Commands:
             find_email = "none"
 
         if find_email != "none":
-            "Email address taken."
+            return "Email address taken."
 
         models.User.objects.filter(email=email).update(email=address)
         return "Email address changed."
