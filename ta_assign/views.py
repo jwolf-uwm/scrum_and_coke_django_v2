@@ -8,11 +8,15 @@ from ta_assign import models
 # Create your views here.
 
 
+# Index/Homepage
 class Index(View):
-    def get(self, request):
+
+    @staticmethod
+    def get(request):
         return render(request, 'main/index.html')
 
 
+# Login
 class Login(View):
     def get(self, request):
         if request.session.get("email"):
@@ -34,6 +38,7 @@ class Login(View):
         return redirect("index1")
 
 
+# Logout
 class Logout(View):
     def get(self, request):
         if not request.session.get("email"):
@@ -44,9 +49,11 @@ class Logout(View):
         return redirect("Login1")
 
 
+# create Account
 class CreateAccount(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
 
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
@@ -60,7 +67,8 @@ class CreateAccount(View):
 
         return render(request, 'main/create_account.html')
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
 
         account_email = request.POST["email"]
         account_password = request.POST["password"]
@@ -73,3 +81,36 @@ class CreateAccount(View):
             messages.error(request, response)
 
         return render(request, 'main/create_account.html')
+
+# Create Course
+
+
+# Access Info
+class AccessInfo(View):
+
+    @staticmethod
+    def get(request):
+
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        response = Commands.access_info()
+        messages.success(request, response)
+        return render(request, 'main/access_info.html')
+
+# Edit Account
+
+# Edit Info
+
+# Assign Instructor
+
+# Assign TA
+
+# View TA Assign
