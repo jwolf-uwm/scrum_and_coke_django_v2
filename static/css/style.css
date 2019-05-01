@@ -7,6 +7,11 @@ body {
     color: red;
 }
 
+#nav {
+    width: 100%;
+    line-height: 30px;
+}
+
 .menu {
     background: black;
     color: white;
