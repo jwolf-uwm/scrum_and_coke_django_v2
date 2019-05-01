@@ -108,7 +108,7 @@ class CreateCourse(View):
         for i in range(num):
             lab = models.Lab()
             lab.section_id = 801 + i
-            lab.course_id = course_id
+            lab.course_id = "CS"+course_id+"-"+course_section
             lab.save()
 
         if response == "Course has been created successfully.":
