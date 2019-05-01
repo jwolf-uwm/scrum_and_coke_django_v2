@@ -298,7 +298,7 @@ class Commands:
             return "no such course"
 
         try:
-            check_exist = models.TACourse.objects.get(course_id=course, TA=email)
+            check_exist = models.TACourse.objects.get(course=check_course, TA=check_ta)
         except models.TACourse.DoesNotExist:
             check_exist = None
 
