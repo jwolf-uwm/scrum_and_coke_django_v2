@@ -3,7 +3,7 @@ from ta_assign import models
 from classes.commands import Commands
 
 
-class TestCreateAccount(TestCase):
+class TestCreateCourse(TestCase):
     def setUp(self):
         return
 
