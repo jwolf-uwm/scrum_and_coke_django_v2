@@ -43,9 +43,6 @@ class Commands:
     def create_account(email, password, account_type):
         # Jeff's method
         # Usage: (string: email, string: password, string: account_type)
-        # returns True if account successfully created in DB
-        # returns False if account was unable to be created
-        # throws exceptions if you do it wrong
 
         try:
             find_email = models.User.objects.get(email=email)
@@ -258,6 +255,13 @@ class Commands:
         return "Phone number changed."
 
     # View Info Commands
+    @staticmethod
+    def view_info(email):
+
+        this_guy = models.User.objects.get(email=email)
+        info_list = [this_guy.email, this_guy.password, this_guy.name, this_guy.phone]
+
+        return info_list
 
     # Assign Instructor Commands
 
