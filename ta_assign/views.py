@@ -229,6 +229,54 @@ class EditInfo(View):
 
 # Assign Instructor
 
-# Assign TA
 
+class AssignInstructorToCourse(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_instructor.html')
+
+    def post(self, request):
+        email1 = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        command_course = "CS" + course_id + "-" + course_section
+        response = Commands.assign_instructor(email1, command_course)
+
+        if response == "Instructor Assigned!":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+        return render(request, 'main/assign_instructor.html')
+
+    # Assign TA
+
+
+class AssignTAToCourse(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_ta.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        command_input = "CS" + course_id + "-" + course_section
+        response = Commands.assign_ta(email, command_input)
+        if response == "TA Assigned!":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+        return render(request, 'main/assign_ta.html')
 # View TA Assign
