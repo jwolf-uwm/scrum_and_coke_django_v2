@@ -297,11 +297,32 @@ class Commands:
         if check_course is None:
             return "no such course"
 
-        ta_course = models.TACourse()
-        ta_course.TA = check_ta
-        ta_course.course = check_course
-        ta_course.save()
-        return "TA Assigned!"
+        try:
+            check_exist = models.TACourse.objects.get(course_id=course, TA=email)
+        except models.TACourse.DoesNotExist:
+            check_exist = None
+
+        if check_exist is None:
+            numta = check_course.current_num_TA
+            if numta+1>check_course.num_labs:
+                return "Too Many TA's Assigned"
+            models.Course.objects.filter(course_id=course).update(current_num_TA=numta+1)
+            ta_course = models.TACourse()
+            ta_course.TA = check_ta
+            ta_course.course = check_course
+            ta_course.save()
+            return "TA Assigned!"
+        else:
+            return "Ta Already Assigned!"
+    # View course assignments
+    @staticmethod
+    def view_course_assignments(instructor):
+        string_list = ""
+        courses = models.Course.objects.filter(instructor=instructor)
+        for course in courses:
+            string_list = string_list + course.course_id + " \n"
+
+        return string_list
     # View TA Assign Commands
 
     # Read Public Contact Info Commands
