@@ -104,6 +104,12 @@ class CreateCourse(View):
         num_labs = request.POST["num_labs"]
 
         response = Commands.create_course("CS"+course_id+"-"+course_section, num_labs)
+        num = int(num_labs)
+        for i in range(num):
+            lab = models.Lab()
+            lab.section_id = 801 + i
+            lab.course_id = course_id
+            lab.save()
 
         if response == "Course has been created successfully.":
             messages.success(request, response)
