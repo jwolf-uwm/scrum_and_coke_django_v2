@@ -340,7 +340,7 @@ class Commands:
                     string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
 
                 for ta_lab in models.Lab.objects.all():
-                    if ta_lab.TA.email == tee_ayy.email:
+                    if ta_lab.TA == tee_ayy.email:
                         string_list = string_list + "Lab: " + ta_lab.section_id + "\n"
                 string_list = string_list + "\n"
 
