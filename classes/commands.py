@@ -313,7 +313,7 @@ class Commands:
             ta_course.save()
             return "TA Assigned!"
         else:
-            return "Ta Already Assigned!"
+            return "TA Already Assigned!"
     # View course assignments
     @staticmethod
     def view_course_assignments(instructor):
