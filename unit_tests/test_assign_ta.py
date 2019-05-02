@@ -78,4 +78,41 @@ class AssignTACourse(TestCase):
         course1.save()
         proper = Commands.assign_ta(ins1.email, course1.course_id)
         self.assertEqual(proper, "no such ta")
-    
+
+    def test_assign_ta_too_many(self):
+        ta1 = models.User()
+        ta1.email = "ta1@uwm.edu"
+        ta1.type = "ta"
+        ta1.save()
+        ta2 = models.User()
+        ta2.email = "ta2@uwm.edu"
+        ta2.type = "ta"
+        ta2.save()
+        ta3 = models.User()
+        ta3.email = "ta3@uwm.edu"
+        ta3.type = "ta"
+        ta3.save()
+        course1 = models.Course()
+        course1.course_id = "CS301-001"
+        course1.num_labs = 2
+        course1.save()
+        proper = Commands.assign_ta(ta1.email, course1.course_id)
+        self.assertEqual(proper, "TA Assigned!")
+        proper = Commands.assign_ta(ta2.email, course1.course_id)
+        self.assertEqual(proper, "TA Assigned!")
+        proper = Commands.assign_ta(ta3.email, course1.course_id)
+        self.assertEqual(proper, "Too Many TA's Assigned")
+
+    def test_assign_ta_already_assigned(self):
+        ta1 = models.User()
+        ta1.email = "ta1@uwm.edu"
+        ta1.type = "ta"
+        ta1.save()
+        course1 = models.Course()
+        course1.course_id = "CS301-001"
+        course1.num_labs = 2
+        course1.save()
+        proper = Commands.assign_ta(ta1.email, course1.course_id)
+        self.assertEqual(proper, "TA Assigned!")
+        proper = Commands.assign_ta(ta1.email, course1.course_id)
+        self.assertEqual(proper, "TA Already Assigned!")
