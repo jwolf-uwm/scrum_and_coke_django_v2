@@ -16,7 +16,6 @@ class Course(models.Model):
     course_id = models.PositiveSmallIntegerField(default=0)
     num_lectures = models.PositiveSmallIntegerField(default=0)
     num_labs = models.PositiveSmallIntegerField(default=0)
-    num_graders = models.PositiveSmallIntegerField(default=0)
     current_num_TA = models.PositiveSmallIntegerField(default=0)
     current_num_lectures = models.PositiveSmallIntegerField(default=0)
     current_num_labs = models.PositiveSmallIntegerField(default=0)
@@ -26,7 +25,7 @@ class Lecture(models.Model):
     instructor = models.CharField(max_length=50, default="no instructor")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     lecture_section = models.PositiveSmallIntegerField(default=0)
-    lecture_location = models.CharField(max_length=50)
+    lecture_location = models.CharField(max_length=50, default="NOT SET")
     lecture_time = models.TimeField()
 
 

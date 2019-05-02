@@ -76,22 +76,22 @@ class Commands:
 
     # Create Course Commands
     @staticmethod
-    def create_course(course_id, num_labs):
-        if len(course_id) != 9:
-            return "course_id is the wrong size to be of the right form (CS###-###)"
-        if course_id[0:2] != "CS":
-            return "course_id is not a CS course (CS###-###)"
-        if not course_id[2:5].isdigit():
-            return "The course number contains an invalid digit (CS###-###)"
-        if course_id[5] != "-":
-            return "The course and section number should be separated by a hyphen (CS###-###)"
-        if not course_id[6:].isdigit():
-            return "The section number contains an invalid digit (CS###-###)"
-        try:
-            if int(num_labs) < 0 or int(num_labs) > 5:
-                return "The number of lab sections should be positive and not exceed 5"
-        except ValueError:
-            return "num_labs must be an valid number"
+    def create_course(department, course_id, num_lectures, num_labs):
+        good_dept = ["COMPSCI", "ELECENG", "PHYSICS", "MATH", "BIOMED", "CIVIL", "INDENG", "MATENG",
+                     "MECHENG", "STRUCENG", "WEBDEV"]
+        if department not in good_dept:
+            return "That department is not offered"
+        if course_id < 101 or course_id > 999:
+            return "Course ID must be 3 digits long and between 101 and 999"
+        if not num_labs.isdigit():
+            return "Number of lab sections must be a number"
+        if not num_lectures.isdigit():
+            return "Number of lecture sections must be a number"
+        if int(num_labs) < 0 or int(num_labs) > 5:
+            return "Number of lab sections cannot be less than 0 or greater than 5"
+        if int(num_lectures) < 0 or int(num_lectures) > 5:
+            return "Number of lecture sections cannot be less than 0 or greater than 5"
+
         try:
             find_course = models.Course.objects.get(course_id=course_id)
         except models.Course.DoesNotExist:
@@ -100,9 +100,27 @@ class Commands:
             return "Course already exists"
 
         some_course = models.Course()
+        some_course.course_department = department
         some_course.course_id = course_id
+        some_course.num_lectures = num_lectures
         some_course.num_labs = num_labs
         some_course.save()
+
+        for i in range(int(num_labs)):
+            lab = models.Lab()
+            lab.lab_section = 801 + i
+            lab.course = some_course
+            lab.save()
+
+        for i in range(int(num_lectures)):
+            lec = models.Lecture()
+            if int(num_labs) == 0:
+                lec.lecture_section = 1 + i
+            else:
+                lec.lecture_section = 401 + i
+            lec.course = some_course
+            lec.save()
+
         return "Course created successfully"
 
     # Access Info Commands
