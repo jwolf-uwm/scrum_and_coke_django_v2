@@ -15,8 +15,6 @@ class Commands:
         temp = None
 
         for i in people:
-            if i.isLoggedOn is True:
-                return "User already logged in"
             if i.email == email:
                 temp = i
 
@@ -25,7 +23,7 @@ class Commands:
         elif temp.email != email or temp.password != password:
             return "Invalid login info"
         models.User.objects.filter(email=email).update(isLoggedOn=True)
-        return
+        return "Login successful"
 
     # Logout commands
     # this also appears unused in the view
@@ -300,7 +298,7 @@ class Commands:
             return "no such course"
 
         try:
-            check_exist = models.TACourse.objects.get(course_id=course, TA=email)
+            check_exist = models.TACourse.objects.get(course=check_course, TA=check_ta)
         except models.TACourse.DoesNotExist:
             check_exist = None
 
@@ -325,7 +323,26 @@ class Commands:
             string_list = string_list + course.course_id + " \n"
 
         return string_list
+
     # View TA Assign Commands
+
+    @staticmethod
+    def view_ta_assign():
+        string_list = ""
+        tee_ayys = models.User.objects.filter(type="ta")
+        for tee_ayy in tee_ayys:
+            string_list = string_list + "TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + tee_ayy.phone + "\n"
+
+            for ta_courses in models.TACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
+
+                for ta_lab in models.Lab.objects.all():
+                    if ta_lab.TA == tee_ayy.email:
+                        string_list = string_list + "Lab: " + ta_lab.section_id + "\n"
+                string_list = string_list + "\n"
+
+        return string_list
 
     # Read Public Contact Info Commands
     @staticmethod
