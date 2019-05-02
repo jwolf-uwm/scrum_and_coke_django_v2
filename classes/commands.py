@@ -91,11 +91,11 @@ class Commands:
             return "Number of lecture sections must be a number"
         if int(num_labs) < 0 or int(num_labs) > 5:
             return "Number of lab sections cannot be less than 0 or greater than 5"
-        if int(num_lectures) < 0 or int(num_lectures) > 5:
-            return "Number of lecture sections cannot be less than 0 or greater than 5"
+        if int(num_lectures) < 1 or int(num_lectures) > 5:
+            return "Number of lecture sections cannot be less than 1 or greater than 5"
 
         try:
-            find_course = models.Course.objects.get(course_id=course_id)
+            find_course = models.Course.objects.get(course_department=department, course_id=course_id)
         except models.Course.DoesNotExist:
             find_course = "none"
         if find_course != "none":

@@ -111,7 +111,7 @@ class CreateCourse(View):
         else:
             messages.error(request, response)
 
-        return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
+        return render(request, 'main/create_course.html', {"message": [course_department, course_id, num_lectures, num_labs]})
 
 
 # Access Info

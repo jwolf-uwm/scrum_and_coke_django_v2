@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 
 # Create your models here.
@@ -26,7 +27,7 @@ class Lecture(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     lecture_section = models.PositiveSmallIntegerField(default=0)
     lecture_location = models.CharField(max_length=50, default="NOT SET")
-    lecture_time = models.TimeField()
+    lecture_time = models.TimeField(default=datetime.time(16, 00))
 
 
 class Lab(models.Model):
@@ -34,7 +35,7 @@ class Lab(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     lab_section = models.PositiveSmallIntegerField(default=0)
     lab_location = models.CharField(max_length=50)
-    lab_time = models.TimeField()
+    lab_time = models.TimeField(default=datetime.time(16, 00))
 
 
 class InstructorCourse(models.Model):
