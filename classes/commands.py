@@ -81,7 +81,9 @@ class Commands:
                      "MECHENG", "STRUCENG", "WEBDEV"]
         if department not in good_dept:
             return "That department is not offered"
-        if course_id < 101 or course_id > 999:
+        if not course_id.isdigit():
+            return "Course ID must be a number"
+        if int(course_id) < 101 or int(course_id) > 999:
             return "Course ID must be 3 digits long and between 101 and 999"
         if not num_labs.isdigit():
             return "Number of lab sections must be a number"
