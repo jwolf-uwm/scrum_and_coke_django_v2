@@ -78,3 +78,4 @@ class AssignTACourse(TestCase):
         course1.save()
         proper = Commands.assign_ta(ins1.email, course1.course_id)
         self.assertEqual(proper, "no such ta")
+    
