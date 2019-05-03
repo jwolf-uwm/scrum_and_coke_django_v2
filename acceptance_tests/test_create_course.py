@@ -82,7 +82,8 @@ class CreateCourseTests(TestCase):
         session['email'] = 'ta_assign_admin@uwm.edu'
         session['type'] = 'administrator'
         session.save()
-        response = client.post('/create_course/', data={'course_id': "361", 'course_section': "401", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
         self.assertContains(response, "Course created successfully")
@@ -93,7 +94,8 @@ class CreateCourseTests(TestCase):
         session['email'] = 'ta_assign_super@uwm.edu'
         session['type'] = 'supervisor'
         session.save()
-        response = client.post('/create_course/', data={'course_id': "361", 'course_section': "401", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
         self.assertContains(response, "Course created successfully")
@@ -105,15 +107,30 @@ class CreateCourseTests(TestCase):
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "361", 'course_section': "401", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
         self.assertContains(response, "Course created successfully")
 
-        response = client.post('/create_course/', data={'course_id': "361", 'course_section': "401", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
         self.assertContains(response, "Course already exists")
+
+    def test_create_course_bad_department(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/create_course/', data={'course_department': "CHILDAFFAIRS", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "3"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Course")
+        self.assertContains(response, "That department is not offered")
 
     def test_create_course_course_id_letters(self):
         client = Client()
@@ -122,10 +139,11 @@ class CreateCourseTests(TestCase):
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "ABC", 'course_section': "401", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "ABC",
+                                                        'num_lectures': "3", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "The course number contains an invalid digit (CS###-###)")
+        self.assertContains(response, "Course ID must be a number")
 
     def test_create_course_course_id_too_big(self):
         client = Client()
@@ -134,10 +152,11 @@ class CreateCourseTests(TestCase):
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "1234", 'course_section': "401", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "1234",
+                                                        'num_lectures': "3", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "course_id is the wrong size to be of the right form (CS###-###)")
+        self.assertContains(response, "Course ID must be 3 digits long and between 101 and 999")
 
     def test_create_course_course_id_too_small(self):
         client = Client()
@@ -146,46 +165,63 @@ class CreateCourseTests(TestCase):
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "12", 'course_section': "401", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "12",
+                                                        'num_lectures': "3", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "course_id is the wrong size to be of the right form (CS###-###)")
+        self.assertContains(response, "Course ID must be 3 digits long and between 101 and 999")
 
-    def test_create_course_course_section_letters(self):
+    def test_create_course_num_lectures_letters(self):
         client = Client()
         session = client.session
         session['email'] = 'ta_assign_admin@uwm.edu'
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "123", 'course_section': "ABC", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "A", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "The section number contains an invalid digit (CS###-###)")
+        self.assertContains(response, "Number of lecture sections must be a number")
 
-    def test_create_course_course_section_too_big(self):
+    def test_create_course_num_lectures_too_big(self):
         client = Client()
         session = client.session
         session['email'] = 'ta_assign_admin@uwm.edu'
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "123", 'course_section': "1234", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "12", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "course_id is the wrong size to be of the right form (CS###-###)")
+        self.assertContains(response, "Number of lecture sections cannot be less than 1 or greater than 5")
 
-    def test_create_course_course_section_too_small(self):
+    def test_create_course_num_lectures_zero(self):
         client = Client()
         session = client.session
         session['email'] = 'ta_assign_admin@uwm.edu'
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "123", 'course_section': "99", 'num_labs': "3"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "0", 'num_labs': "3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "course_id is the wrong size to be of the right form (CS###-###)")
+        self.assertContains(response, "Number of lecture sections cannot be less than 1 or greater than 5")
+
+    def test_create_course_num_lectures_neg(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "-1", 'num_labs': "3"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Course")
+        self.assertContains(response, "Number of lecture sections must be a number")
 
     def test_create_course_num_labs_letters(self):
         client = Client()
@@ -194,10 +230,11 @@ class CreateCourseTests(TestCase):
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "123", 'course_section': "401", 'num_labs': "A"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "A"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "num_labs must be an valid number")
+        self.assertContains(response, "Number of lab sections must be a number")
 
     def test_create_course_num_labs_too_big(self):
         client = Client()
@@ -206,19 +243,21 @@ class CreateCourseTests(TestCase):
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "123", 'course_section': "401", 'num_labs': "6"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "31"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "The number of lab sections should be positive and not exceed 5")
+        self.assertContains(response, "Number of lab sections cannot be less than 0 or greater than 5")
 
-    def test_create_course_num_labs_too_small(self):
+    def test_create_course_num_labs_neg(self):
         client = Client()
         session = client.session
         session['email'] = 'ta_assign_admin@uwm.edu'
         session['type'] = 'administrator'
         session.save()
 
-        response = client.post('/create_course/', data={'course_id': "123", 'course_section': "401", 'num_labs': "-1"})
+        response = client.post('/create_course/', data={'course_department': "COMPSCI", 'course_id': "361",
+                                                        'num_lectures': "3", 'num_labs': "-3"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Course")
-        self.assertContains(response, "The number of lab sections should be positive and not exceed 5")
+        self.assertContains(response, "Number of lab sections must be a number")
