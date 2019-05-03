@@ -178,7 +178,7 @@ class EditInfo(View):
 
         return render(request, 'main/edit_info.html', {"some_email": some_guy.email, "some_password": some_guy.password,
                                                        "some_name": some_guy.name, "some_phone": some_guy.phone,
-                                                       "some_address": some_guy.adress})
+                                                       "some_address": some_guy.address})
 
     @staticmethod
     def post(request):
