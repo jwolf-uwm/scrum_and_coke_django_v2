@@ -186,6 +186,7 @@ class EditInfo(View):
         password = request.POST["password"]
         name = request.POST["name"]
         phone = request.POST["phone"]
+        address = request.POST["address"]
         pick_anything = False
 
         if email != "":
@@ -220,6 +221,15 @@ class EditInfo(View):
             response = Commands.change_phone(request.session["email"], phone)
 
             if response == "Phone number changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if address != "":
+            pick_anything = True
+            response = Commands.change_address(request.session["email"], address)
+
+            if response == "Address changed.":
                 messages.success(request, response)
             else:
                 messages.error(request, response)

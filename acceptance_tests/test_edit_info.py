@@ -9,6 +9,8 @@ class EditInfoTests(TestCase):
     def setUp(self):
         return
 
+    # get tests
+
     def test_no_login_get(self):
 
         client = Client()
@@ -98,6 +100,8 @@ class EditInfoTests(TestCase):
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         self.assertEqual(len(all_messages), 0)
 
+    # email tests
+
     def test_admin_change_email(self):
 
         ad1 = models.User()
@@ -113,7 +117,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "admin@uwm.edu", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address changed.")
@@ -133,7 +137,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "super@uwm.edu", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address changed.")
@@ -153,7 +157,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "inst@uwm.edu", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address changed.")
@@ -173,7 +177,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "tee_ayy@uwm.edu", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address changed.")
@@ -193,7 +197,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "admin@uwm.com", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address must be uwm address.")
@@ -213,7 +217,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "admin@uwm.edu@uwm.edu", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address must be uwm address.")
@@ -239,7 +243,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "ta_assign_super@uwm.edu", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address taken.")
@@ -270,9 +274,9 @@ class EditInfoTests(TestCase):
         session2.save()
 
         response = client.post('/edit_info/', data={'email': "admin@uwm.edu", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         response2 = client2.post('/edit_info/', data={'email': "super@uwm.edu", 'password': "", 'name': "",
-                                                      'phone': ""}, follow="true")
+                                                      'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address changed.")
@@ -295,7 +299,8 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "thereallylongemailaddresslikefiftychars123@uwm.edu",
-                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+                                                    'password': "", 'name': "", 'phone': "", 'address': ""},
+                               follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address changed.")
@@ -315,7 +320,8 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "a@uwm.edu",
-                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+                                                    'password': "", 'name': "", 'phone': "", 'address': ""},
+                               follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address changed.")
@@ -335,7 +341,8 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "thereallylongemailaddresslikefiftychars1234@uwm.edu",
-                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+                                                    'password': "", 'name': "", 'phone': "", 'address': ""},
+                               follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address must be 50 characters or less.")
@@ -355,10 +362,13 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "1",
-                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+                                                    'password': "", 'name': "", 'phone': "", 'address': ""},
+                               follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address must be uwm address.")
+
+    # password tests
 
     def test_admin_change_password(self):
 
@@ -375,7 +385,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
@@ -395,7 +405,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
@@ -415,7 +425,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
@@ -435,7 +445,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
@@ -467,13 +477,13 @@ class EditInfoTests(TestCase):
         session2.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
 
         response2 = client2.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
-                                                      'phone': ""}, follow="true")
+                                                      'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response2.status_code, 200)
         self.assertContains(response2, "Edit Info")
         self.assertContains(response2, "Password changed.")
@@ -493,7 +503,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "bigol20charpassword1", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
@@ -513,7 +523,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "1", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
@@ -533,10 +543,12 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "bigol20charpassword11", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password must be 20 characters or less.")
+
+    # name tests
 
     def test_admin_change_name(self):
 
@@ -553,7 +565,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "Admin",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
@@ -573,7 +585,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "Super",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
@@ -593,7 +605,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "Instructor",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
@@ -613,7 +625,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "TA",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
@@ -633,7 +645,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "Jim Joe Bob Henry Bob Bob",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
@@ -654,7 +666,7 @@ class EditInfoTests(TestCase):
 
         response = client.post('/edit_info/', data={'email': "", 'password': "",
                                                     'name': "John Jacob Jingle Heimer Schmitenhoffenvuelerstein",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
@@ -675,7 +687,7 @@ class EditInfoTests(TestCase):
 
         response = client.post('/edit_info/', data={'email': "", 'password': "",
                                                     'name': "A",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
@@ -696,10 +708,12 @@ class EditInfoTests(TestCase):
 
         response = client.post('/edit_info/', data={'email': "", 'password': "",
                                                     'name': "John Jacob Jingle Heimer Schmitenhoffenvuelerstein1",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name must be 50 characters or less.")
+
+    # phone tests
 
     def test_admin_change_phone(self):
 
@@ -716,7 +730,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "414.867.5309"}, follow="true")
+                                                    'phone': "414.867.5309", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Phone number changed.")
@@ -736,7 +750,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "414.867.5309"}, follow="true")
+                                                    'phone': "414.867.5309", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Phone number changed.")
@@ -756,7 +770,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "414.867.5309"}, follow="true")
+                                                    'phone': "414.867.5309", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Phone number changed.")
@@ -776,7 +790,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "414.867.5309"}, follow="true")
+                                                    'phone': "414.867.5309", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Phone number changed.")
@@ -796,7 +810,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "414-867-5309"}, follow="true")
+                                                    'phone': "414-867-5309", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Invalid phone format.")
@@ -816,7 +830,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "4148675309"}, follow="true")
+                                                    'phone': "4148675309", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Invalid phone format.")
@@ -836,7 +850,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "9999.9999.99999"}, follow="true")
+                                                    'phone': "9999.9999.99999", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Invalid phone format.")
@@ -856,7 +870,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "999.999.9999"}, follow="true")
+                                                    'phone': "999.999.9999", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Phone number changed.")
@@ -876,7 +890,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': "I'M A PHONE NUMBER"}, follow="true")
+                                                    'phone': "I'M A PHONE NUMBER", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Invalid phone format.")
@@ -896,7 +910,7 @@ class EditInfoTests(TestCase):
         session.save()
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
-                                                    'phone': ""}, follow="true")
+                                                    'phone': "", 'address': ""}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "You should pick something to change.")
