@@ -278,7 +278,7 @@ class Commands:
     def view_info(email):
 
         this_guy = models.User.objects.get(email=email)
-        info_list = [this_guy.email, this_guy.password, this_guy.name, this_guy.phone]
+        info_list = [this_guy.email, this_guy.password, this_guy.name, this_guy.phone, this_guy.address]
 
         return info_list
 
@@ -368,7 +368,4 @@ class Commands:
     # Read Public Contact Info Commands
     @staticmethod
     def read_public(email):
-
-
-
         return

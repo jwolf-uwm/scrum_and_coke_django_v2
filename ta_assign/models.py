@@ -10,6 +10,7 @@ class User(models.Model):
     name = models.CharField(max_length=50, default="DEFAULT")
     type = models.CharField(max_length=20, default="person")
     isLoggedOn = models.BooleanField(default=False)
+    address = models.CharField(max_length=100, default="not set")
 
 
 class Course(models.Model):

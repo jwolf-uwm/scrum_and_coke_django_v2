@@ -25,6 +25,8 @@ class TestCreateAccount(TestCase):
         self.assertEqual(test_model_ins.phone, "000.000.0000")
         # login false test
         self.assertFalse(test_model_ins.isLoggedOn)
+        # default address test
+        self.assertEqual(test_model_ins.address, "not set")
 
     def test_create_account_TA(self):
         # Create TA Tests
@@ -42,6 +44,8 @@ class TestCreateAccount(TestCase):
         self.assertEqual(test_model_ta.phone, "000.000.0000")
         # login false test
         self.assertFalse(test_model_ta.isLoggedOn)
+        # default address test
+        self.assertEqual(test_model_ta.address, "not set")
 
     # Invalid account type tests
     def test_create_account_supervisor(self):
