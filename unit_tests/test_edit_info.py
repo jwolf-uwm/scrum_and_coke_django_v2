@@ -349,16 +349,160 @@ class TestEditInfo(TestCase):
         with self.assertRaises(TypeError):
             Commands.change_email(1, 2)
 
-    def test_change_phone(self):
-        self.assertEquals(Commands.change_phone("person1@uwm.edu", "414.414.4141"), "Phone number changed.")
-        self.person1 = models.User.objects.get(email="person1@uwm.edu")
-        self.assertEquals(self.person1.phone, "414.414.4141")
-        self.assertNotEquals(self.person1.phone, "000.000.0000")
-        self.assertEquals(Commands.change_phone("person1@uwm.edu", "1234567890"), "Invalid phone format.")
-        self.assertEquals(Commands.change_phone("person1@uwm.edu", "414-414-4141"), "Invalid phone format.")
-        self.assertEquals(Commands.change_phone("person1@uwm.edu", "(414)414-4141"), "Invalid phone format.")
-        self.assertEquals(Commands.change_phone("person1@uwm.edu", "abc.abc.abcd"), "Invalid phone format.")
-        self.assertEquals(Commands.change_phone("person1@uwm.edu", "1234.1234.1234"), "Invalid phone format.")
+    # phone tests
+
+    def test_change_admin_phone(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_phone("admin1@uwm.edu", "414.111.1111"), "Phone number changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.phone, "414.111.1111")
+        self.assertNotEquals(self.ad1.phone, "000.000.0000")
+
+    def test_change_super_phone(self):
+        self.sup1 = models.User()
+        self.sup1.email = "super1@uwm.edu"
+        self.sup1.password = "password"
+        self.sup1.type = "supervisor"
+        self.sup1.save()
+        self.assertEquals(Commands.change_phone("super1@uwm.edu", "414.111.1111"), "Phone number changed.")
+        self.sup1 = models.User.objects.get(email="super1@uwm.edu")
+        self.assertEquals(self.sup1.phone, "414.111.1111")
+        self.assertNotEquals(self.sup1.phone, "000.000.0000")
+
+    def test_change_inst_phone(self):
+        self.inst1 = models.User()
+        self.inst1.email = "inst1@uwm.edu"
+        self.inst1.password = "password"
+        self.inst1.type = "instructor"
+        self.inst1.save()
+        self.assertEquals(Commands.change_phone("inst1@uwm.edu", "414.111.1111"), "Phone number changed.")
+        self.inst1 = models.User.objects.get(email="inst1@uwm.edu")
+        self.assertEquals(self.inst1.phone, "414.111.1111")
+        self.assertNotEquals(self.inst1.phone, "000.000.0000")
+
+    def test_change_ta_phone(self):
+        self.ta1 = models.User()
+        self.ta1.email = "ta1@uwm.edu"
+        self.ta1.password = "password"
+        self.ta1.type = "ta"
+        self.ta1.save()
+        self.assertEquals(Commands.change_phone("ta1@uwm.edu", "414.111.1111"), "Phone number changed.")
+        self.ta1 = models.User.objects.get(email="ta1@uwm.edu")
+        self.assertEquals(self.ta1.phone, "414.111.1111")
+        self.assertNotEquals(self.ta1.phone, "000.000.0000")
+
+    def test_change_phone_multi_user(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        self.sup1 = models.User()
+        self.sup1.email = "super1@uwm.edu"
+        self.sup1.password = "password"
+        self.sup1.type = "supervisor"
+        self.sup1.save()
+
+        self.assertEquals(Commands.change_phone("admin1@uwm.edu", "414.111.1111"), "Phone number changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.phone, "414.111.1111")
+        self.assertNotEquals(self.ad1.phone, "000.000.0000")
+
+    def test_change_max_phone(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_phone("admin1@uwm.edu", "999.999.9999"), "Phone number changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.phone, "999.999.9999")
+        self.assertNotEquals(self.ad1.phone, "000.000.0000")
+
+    def test_change_too_big_phone(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_phone("admin1@uwm.edu", "9999.9999.99999"), "Invalid phone format.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.phone, "000.000.0000")
+        self.assertNotEquals(self.ad1.phone, "9999.9999.99999")
+
+    def test_change_blank_phone(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_phone("admin1@uwm.edu", ""), "Invalid phone format.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.phone, "000.000.0000")
+        self.assertNotEquals(self.ad1.phone, "")
+
+    def test_change_too_small_phone(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_phone("admin1@uwm.edu", "99.99.999"), "Invalid phone format.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.phone, "000.000.0000")
+        self.assertNotEquals(self.ad1.phone, "99.99.999")
+
+    def test_change_phone_just_string(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_phone("admin1@uwm.edu", "I'M A PHONE NUMBER"), "Invalid phone format.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.phone, "000.000.0000")
+        self.assertNotEquals(self.ad1.phone, "I'M A PHONE NUMBER")
+
+    def test_change_phone_no_number(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        with self.assertRaises(TypeError):
+            Commands.change_phone("admin1@uwm.edu")
+
+    def test_change_phone_no_email(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        with self.assertRaises(TypeError):
+            Commands.change_phone("414.111.1111")
+
+    def test_change_phone_no_args(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        with self.assertRaises(TypeError):
+            Commands.change_phone()
+
+    def test_change_phone_wrong_arg_type(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        with self.assertRaises(AttributeError):
+            Commands.change_phone(1, 2)
 
     def test_change_name(self):
         self.assertEquals(Commands.change_name("person1@uwm.edu", "Snoop Doggy Dog"), "Name changed.")
