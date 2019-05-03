@@ -25,7 +25,7 @@ class Course(models.Model):
 class Lecture(models.Model):
     instructor = models.CharField(max_length=50, default="no instructor")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    lecture_section = models.PositiveSmallIntegerField(default=0)
+    lecture_section = models.CharField(max_length=3)
     lecture_location = models.CharField(max_length=50, default="NOT SET")
     lecture_time = models.TimeField(default=datetime.time(16, 00))
 
@@ -33,7 +33,7 @@ class Lecture(models.Model):
 class Lab(models.Model):
     TA = models.CharField(max_length=50, default="no TA")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    lab_section = models.PositiveSmallIntegerField(default=0)
+    lab_section = models.CharField(max_length=3)
     lab_location = models.CharField(max_length=50)
     lab_time = models.TimeField(default=datetime.time(16, 00))
 

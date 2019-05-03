@@ -117,7 +117,8 @@ class Commands:
         for i in range(int(num_lectures)):
             lec = models.Lecture()
             if int(num_labs) == 0:
-                lec.lecture_section = 1 + i
+                temp = 1+i
+                lec.lecture_section = "00" + str(temp)
             else:
                 lec.lecture_section = 401 + i
             lec.course = some_course
