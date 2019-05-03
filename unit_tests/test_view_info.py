@@ -17,7 +17,12 @@ class TestViewInfo(TestCase):
         self.assertEquals(Commands.view_info("person1@uwm.edu"),
                           ["person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT", "000.000.0000", "not set"])
 
-    def test_view_info_person2(self):
+    def test_view_info_two_users(self):
+        self.person1 = models.User()
+        self.person1.email = "person1@uwm.edu"
+        self.person1.password = "DEFAULT_PASSWORD"
+        self.person1.save()
+
         self.person2 = models.User()
         self.person2.email = "person2@uwm.edu"
         self.person2.password = "DEFAULT_PASSWORD"
@@ -107,8 +112,117 @@ class TestViewInfo(TestCase):
         self.ta1.type = "ta"
         self.ta1.name = "Gradey Von Gradenhoffen III"
         self.ta1.phone = "414.100.0100"
-        self.inst1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ta1.address = "1234 5th Street Milwaukee, WI 53111"
         self.ta1.save()
         self.assertEquals(Commands.view_info(self.ta1.email),
                           [self.ta1.email, self.ta1.password, self.ta1.name, self.ta1.phone,
                            self.ta1.address])
+
+    def test_view_info_user_big_email(self):
+        self.ad1 = models.User()
+        self.ad1.email = "thereallylongemailaddresslikefiftychars123@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_small_email(self):
+        self.ad1 = models.User()
+        self.ad1.email = "a@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_big_password(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.password = "bigol20charpassword1"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_tiny_password(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.password = "1"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_big_name(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "John Jacob Jingle Heimer Schmitenhoffenvuelerstein"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_small_name(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "A"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_max_phone(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "999.999.9999"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_big_address(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "123456789123 Longstreetnamed St, Except In The Basement, " \
+                           "Really Big Town Name Like So Huge, NY 21221"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_user_tiny_address(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1"
+        self.ad1.save()
+        self.assertEquals(Commands.view_info(self.ad1.email),
+                          [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
