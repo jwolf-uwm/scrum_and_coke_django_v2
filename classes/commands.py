@@ -42,6 +42,9 @@ class Commands:
         # Jeff's method
         # Usage: (string: email, string: password, string: account_type)
 
+        if len(email) > 50:
+            return "Email address must be 50 characters or less."
+
         try:
             find_email = models.User.objects.get(email=email)
         except models.User.DoesNotExist:
@@ -59,6 +62,9 @@ class Commands:
         # figure out how it'd even show up, but if it does someday, we'll find out
         except IndexError:
             return "Bad email address."
+
+        if len(password) > 20:
+            return "Password must be 20 characters or less."
 
         if password == "":
             return "Bad password."
