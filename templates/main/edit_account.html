@@ -4,21 +4,29 @@
     <h1>Edit Account</h1>
     <form method="POST" id="edit_account_form">
         {% csrf_token %}
-        <label for="email">Enter User's Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br><br>
-        <label for="field">Field:</label>
-        <select name="field" form="edit_account_form" required>
-            <option value="email">Email</option>
-            <option value="password">Password</option>
-            <option value="phone">Phone</option>
-            <option value="name">Name</option>
-        </select>
-        <br><br>
-        <label for="data">New Input:</label>
-        <input type="text" id="data" name="data" required>
-        <br><br>
-        <input type="submit">
+        <table>
+            <tr>
+                <td><label for="email">Enter User's Email:</label></td>
+                <td><input type="email" id="email" name="email" required></td>
+            </tr>
+            <tr>
+                <td><label for="field">Field:</label></td>
+                <td><select id="field" name="field" form="edit_account_form" style="width: 100%;" required>
+                        <option value="email">Email</option>
+                        <option value="password">Password</option>
+                        <option value="phone">Phone</option>
+                        <option value="name">Name</option>
+                    </select></td>
+            </tr>
+            <tr>
+                <td><label for="data">New Input:</label></td>
+                <td><input type="text" id="data" name="data" required></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit"></td>
+            </tr>
+        </table>
     </form>
 
     {% for message in messages %}
