@@ -144,7 +144,7 @@ class TestViewInfo(TestCase):
 
     def test_view_info_user_big_password(self):
         self.ad1 = models.User()
-        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.email = "the_admin@uwm.edu"
         self.ad1.password = "bigol20charpassword1"
         self.ad1.type = "administrator"
         self.ad1.name = "Adminbot 4000"
@@ -156,7 +156,7 @@ class TestViewInfo(TestCase):
 
     def test_view_info_user_tiny_password(self):
         self.ad1 = models.User()
-        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.email = "the_admin@uwm.edu"
         self.ad1.password = "1"
         self.ad1.type = "administrator"
         self.ad1.name = "Adminbot 4000"
@@ -168,7 +168,7 @@ class TestViewInfo(TestCase):
 
     def test_view_info_user_big_name(self):
         self.ad1 = models.User()
-        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.email = "the_admin@uwm.edu"
         self.ad1.password = "secure_password"
         self.ad1.type = "administrator"
         self.ad1.name = "John Jacob Jingle Heimer Schmitenhoffenvuelerstein"
@@ -180,7 +180,7 @@ class TestViewInfo(TestCase):
 
     def test_view_info_user_small_name(self):
         self.ad1 = models.User()
-        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.email = "the_admin@uwm.edu"
         self.ad1.password = "secure_password"
         self.ad1.type = "administrator"
         self.ad1.name = "A"
@@ -192,7 +192,7 @@ class TestViewInfo(TestCase):
 
     def test_view_info_user_max_phone(self):
         self.ad1 = models.User()
-        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.email = "the_admin@uwm.edu"
         self.ad1.password = "secure_password"
         self.ad1.type = "administrator"
         self.ad1.name = "Adminbot 4000"
@@ -204,7 +204,7 @@ class TestViewInfo(TestCase):
 
     def test_view_info_user_big_address(self):
         self.ad1 = models.User()
-        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.email = "the_admin@uwm.edu"
         self.ad1.password = "secure_password"
         self.ad1.type = "administrator"
         self.ad1.name = "Adminbot 4000"
@@ -217,7 +217,7 @@ class TestViewInfo(TestCase):
 
     def test_view_info_user_tiny_address(self):
         self.ad1 = models.User()
-        self.ad1.email = "the_admin@uwm.edu@uwm.edu"
+        self.ad1.email = "the_admin@uwm.edu"
         self.ad1.password = "secure_password"
         self.ad1.type = "administrator"
         self.ad1.name = "Adminbot 4000"
@@ -226,3 +226,42 @@ class TestViewInfo(TestCase):
         self.ad1.save()
         self.assertEquals(Commands.view_info(self.ad1.email),
                           [self.ad1.email, self.ad1.password, self.ad1.name, self.ad1.phone, self.ad1.address])
+
+    def test_view_info_no_args(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.view_info()
+
+    def test_view_info_too_many_args(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.view_info("the_admin@uwm.edu", "extra stuff")
+
+    def test_view_info_wrong_type_args(self):
+        self.ad1 = models.User()
+        self.ad1.email = "the_admin@uwm.edu"
+        self.ad1.password = "secure_password"
+        self.ad1.type = "administrator"
+        self.ad1.name = "Adminbot 4000"
+        self.ad1.phone = "414.111.1111"
+        self.ad1.address = "1234 5th Street Milwaukee, WI 53111"
+        self.ad1.save()
+
+        with self.assertRaises(models.User.DoesNotExist):
+            Commands.view_info(1)

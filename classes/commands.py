@@ -230,11 +230,18 @@ class Commands:
         if new == "":
             return "Bad password."
 
+        if len(new) > 20:
+            return "Password must be 20 characters or less."
+
         models.User.objects.filter(email=email).update(password=new)
         return "Password changed."
 
     @staticmethod
     def change_email(email, address):
+
+        if len(address) > 50:
+            return "Email address must be 50 characters or less."
+
         parse_at = address.split("@")
 
         try:
@@ -256,6 +263,12 @@ class Commands:
 
     @staticmethod
     def change_name(email, name):
+        if len(name) > 50:
+            return "Name must be 50 characters or less."
+
+        if name == "":
+            return "Bad name."
+
         models.User.objects.filter(email=email).update(name=name)
         return "Name changed."
 
@@ -272,6 +285,17 @@ class Commands:
 
         models.User.objects.filter(email=email).update(phone=phone)
         return "Phone number changed."
+
+    @staticmethod
+    def change_address(email, address):
+        if len(address) > 100:
+            return "Address must be 100 characters or less."
+
+        if address == "":
+            return "Bad address."
+
+        models.User.objects.filter(email=email).update(address=address)
+        return "Address changed."
 
     # View Info Commands
     @staticmethod
