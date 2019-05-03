@@ -895,6 +895,218 @@ class EditInfoTests(TestCase):
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Invalid phone format.")
 
+    def test_admin_change_address(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "", 'address': "1234 5th Street Milwaukee, WI 53111"},
+                               follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address changed.")
+
+    def test_super_change_address(self):
+
+        sup1 = models.User()
+        sup1.email = "ta_assign_super@uwm.edu"
+        sup1.password = "password"
+        sup1.type = "supervisor"
+        sup1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "", 'address': "1234 5th Street Milwaukee, WI 53111"},
+                               follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address changed.")
+
+    def test_instructor_change_address(self):
+
+        inst1 = models.User()
+        inst1.email = "instructor@uwm.edu"
+        inst1.type = "instructor"
+        inst1.password = "password"
+        inst1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'instructor@uwm.edu'
+        session['type'] = 'instructor'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "", 'address': "1234 5th Street Milwaukee, WI 53111"},
+                               follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address changed.")
+
+    def test_ta_change_address(self):
+
+        ta1 = models.User()
+        ta1.email = "ta@uwm.edu"
+        ta1.type = "ta"
+        ta1.password = "password"
+        ta1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta@uwm.edu'
+        session['type'] = 'ta'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "", 'address': "1234 5th Street Milwaukee, WI 53111"},
+                               follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address changed.")
+
+    def test_multi_user_online_change_address(self):
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        sup1 = models.User()
+        sup1.email = "ta_assign_super@uwm.edu"
+        sup1.password = "password"
+        sup1.type = "supervisor"
+        sup1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        client2 = Client()
+        session2 = client2.session
+        session2['email'] = 'ta_assign_super@uwm.edu'
+        session2['type'] = 'supervisor'
+        session2.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "", 'address': "1234 5th Street Milwaukee, WI 53111"},
+                               follow="true")
+        response2 = client2.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                      'phone': "", 'address': "1234 5th Street Milwaukee, WI 53111"},
+                                 follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address changed.")
+        self.assertEqual(response2.status_code, 200)
+        self.assertContains(response2, "Edit Info")
+        self.assertContains(response2, "Address changed.")
+
+    def test_change_address_max(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "", 'phone': "",
+                                                    'address': "123456789123 Longstreetnamed St, Except In The "
+                                                               "Basement, Really Big Town Name Like So Huge, NY 21221"},
+                               follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address changed.")
+
+    def test_change_address_min(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "", 'phone': "",
+                                                    'address': "1"},
+                               follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address changed.")
+
+    def test_change_address_too_big(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "", 'phone': "",
+                                                    'address': "1123456789123 Longstreetnamed St, Except In The "
+                                                               "Basement, Really Big Town Name Like So Huge, NY 21221"},
+                               follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Address must be 100 characters or less.")
+
+    def test_admin_change_all(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "admin@uwm.edu", 'password': "secure_password",
+                                                    'name': "Admin Guy", 'phone': "414.111.1111",
+                                                    'address': "1234 5th Street Milwaukee, WI 53111"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Email address changed.")
+        self.assertContains(response, "Password changed.")
+        self.assertContains(response, "Name changed.")
+        self.assertContains(response, "Phone number changed.")
+        self.assertContains(response, "Address changed.")
+
     def test_nothing(self):
 
         ad1 = models.User()
