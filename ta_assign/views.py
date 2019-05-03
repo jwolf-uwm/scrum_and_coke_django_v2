@@ -177,7 +177,8 @@ class EditInfo(View):
         some_guy = models.User.objects.get(email=request.session.get("email"))
 
         return render(request, 'main/edit_info.html', {"some_email": some_guy.email, "some_password": some_guy.password,
-                                                       "some_name": some_guy.name, "some_phone": some_guy.phone})
+                                                       "some_name": some_guy.name, "some_phone": some_guy.phone,
+                                                       "some_address": some_guy.adress})
 
     @staticmethod
     def post(request):
