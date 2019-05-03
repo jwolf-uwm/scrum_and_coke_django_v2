@@ -199,3 +199,81 @@ class CreateAccountTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Account")
         self.assertContains(response, "Email address must be uwm address.")
+
+    def test_max_email(self):
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "thereallylongemailaddresslikefiftychars123@uwm.edu",
+                                                         'password': "ta", 'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+
+    def test_min_email(self):
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "t@uwm.edu",
+                                                         'password': "ta", 'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+
+    def test_email_too_big(self):
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "thereallylongemailaddresslikefiftychars1123@uwm.edu",
+                                                         'password': "ta", 'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Email address must be 50 characters or less.")
+
+    def test_max_password(self):
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "bigol20charpassword1",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+
+    def test_min_password(self):
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "1",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+
+    def test_password_too_big(self):
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "bigol20charpassword11",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Password must be 20 characters or less.")
