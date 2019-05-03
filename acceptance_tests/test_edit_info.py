@@ -244,6 +244,122 @@ class EditInfoTests(TestCase):
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Email address taken.")
 
+    def test_multi_user_online_change_email(self):
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        sup1 = models.User()
+        sup1.email = "ta_assign_super@uwm.edu"
+        sup1.password = "password"
+        sup1.type = "supervisor"
+        sup1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        client2 = Client()
+        session2 = client2.session
+        session2['email'] = 'ta_assign_super@uwm.edu'
+        session2['type'] = 'supervisor'
+        session2.save()
+
+        response = client.post('/edit_info/', data={'email': "admin@uwm.edu", 'password': "", 'name': "",
+                                                    'phone': ""}, follow="true")
+        response2 = client2.post('/edit_info/', data={'email': "super@uwm.edu", 'password': "", 'name': "",
+                                                      'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Email address changed.")
+        self.assertEqual(response2.status_code, 200)
+        self.assertContains(response2, "Edit Info")
+        self.assertContains(response2, "Email address changed.")
+
+    def test_change_email_max(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "thereallylongemailaddresslikefiftychars123@uwm.edu",
+                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Email address changed.")
+
+    def test_change_email_min(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "a@uwm.edu",
+                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Email address changed.")
+
+    def test_change_email_too_big(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "thereallylongemailaddresslikefiftychars1234@uwm.edu",
+                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Email address must be 50 characters or less.")
+
+    def test_change_email_int(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "1",
+                                                    'password': "", 'name': "", 'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Email address must be uwm address.")
+
     def test_admin_change_password(self):
 
         ad1 = models.User()
@@ -323,6 +439,104 @@ class EditInfoTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Password changed.")
+
+    def test_change_password_multi_user_online(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        sup1 = models.User()
+        sup1.email = "ta_assign_super@uwm.edu"
+        sup1.password = "password"
+        sup1.type = "supervisor"
+        sup1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        client2 = Client()
+        session2 = client2.session
+        session2['email'] = 'ta_assign_super@uwm.edu'
+        session2['type'] = 'supervisor'
+        session2.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
+                                                    'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Password changed.")
+
+        response2 = client2.post('/edit_info/', data={'email': "", 'password': "new_password", 'name': "",
+                                                      'phone': ""}, follow="true")
+        self.assertEqual(response2.status_code, 200)
+        self.assertContains(response2, "Edit Info")
+        self.assertContains(response2, "Password changed.")
+
+    def test_change_password_max(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "bigol20charpassword1", 'name': "",
+                                                    'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Password changed.")
+
+    def test_change_password_min(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "1", 'name': "",
+                                                    'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Password changed.")
+
+    def test_change_password_too_big(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "bigol20charpassword11", 'name': "",
+                                                    'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Password must be 20 characters or less.")
 
     def test_admin_change_name(self):
 
@@ -423,6 +637,69 @@ class EditInfoTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Name changed.")
+
+    def test_max_name(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "",
+                                                    'name': "John Jacob Jingle Heimer Schmitenhoffenvuelerstein",
+                                                    'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Name changed.")
+
+    def test_min_name(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "",
+                                                    'name': "A",
+                                                    'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Name changed.")
+
+    def test_name_too_big(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "",
+                                                    'name': "John Jacob Jingle Heimer Schmitenhoffenvuelerstein1",
+                                                    'phone': ""}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Name must be 50 characters or less.")
 
     def test_admin_change_phone(self):
 
@@ -540,6 +817,66 @@ class EditInfoTests(TestCase):
 
         response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
                                                     'phone': "4148675309"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Invalid phone format.")
+
+    def test_big_phone(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "9999.9999.99999"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Invalid phone format.")
+
+    def test_max_phone(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "999.999.9999"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Info")
+        self.assertContains(response, "Phone number changed.")
+
+    def test_string_phone(self):
+
+        ad1 = models.User()
+        ad1.email = "ta_assign_admin@uwm.edu"
+        ad1.password = "password"
+        ad1.type = "administrator"
+        ad1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_info/', data={'email': "", 'password': "", 'name': "",
+                                                    'phone': "I'M A PHONE NUMBER"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Info")
         self.assertContains(response, "Invalid phone format.")
