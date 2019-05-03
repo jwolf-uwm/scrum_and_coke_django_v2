@@ -266,6 +266,9 @@ class Commands:
         if len(name) > 50:
             return "Name must be 50 characters or less."
 
+        if name == "":
+            return "Bad name."
+
         models.User.objects.filter(email=email).update(name=name)
         return "Name changed."
 
@@ -287,6 +290,9 @@ class Commands:
     def change_address(email, address):
         if len(address) > 100:
             return "Address must be 100 characters or less."
+
+        if address == "":
+            return "Bad address."
 
         models.User.objects.filter(email=email).update(address=address)
         return "Address changed."

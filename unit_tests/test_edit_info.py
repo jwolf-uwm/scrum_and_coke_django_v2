@@ -148,6 +148,16 @@ class TestEditInfo(TestCase):
         with self.assertRaises(TypeError):
             Commands.change_password(1, 2)
 
+    def test_change_password_no_args(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_password()
+
     # email tests
 
     def test_change_admin_email(self):
@@ -504,8 +514,316 @@ class TestEditInfo(TestCase):
         with self.assertRaises(AttributeError):
             Commands.change_phone(1, 2)
 
-    def test_change_name(self):
-        self.assertEquals(Commands.change_name("person1@uwm.edu", "Snoop Doggy Dog"), "Name changed.")
-        self.person1 = models.User.objects.get(email="person1@uwm.edu")
-        self.assertEquals(self.person1.name, "Snoop Doggy Dog")
-        self.assertNotEquals(self.person1.name, "DEFAULT")
+    # name tests
+
+    def test_change_admin_name(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_name("admin1@uwm.edu", "Admin Guy"), "Name changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.name, "Admin Guy")
+        self.assertNotEquals(self.ad1.name, "DEFAULT")
+
+    def test_change_super_name(self):
+        self.sup1 = models.User()
+        self.sup1.email = "super1@uwm.edu"
+        self.sup1.password = "password"
+        self.sup1.type = "supervisor"
+        self.sup1.save()
+        self.assertEquals(Commands.change_name("super1@uwm.edu", "Super Guy"), "Name changed.")
+        sup1 = models.User.objects.get(email="super1@uwm.edu")
+        self.assertEquals(sup1.name, "Super Guy")
+        self.assertNotEquals(sup1.name, "DEFAULT")
+
+    def test_change_instructor_name(self):
+        self.inst1 = models.User()
+        self.inst1.email = "inst1@uwm.edu"
+        self.inst1.password = "password"
+        self.inst1.type = "instructor"
+        self.inst1.save()
+        self.assertEquals(Commands.change_name("inst1@uwm.edu", "Instructor Guy"), "Name changed.")
+        inst1 = models.User.objects.get(email="inst1@uwm.edu")
+        self.assertEquals(inst1.name, "Instructor Guy")
+        self.assertNotEquals(inst1.name, "DEFAULT")
+
+    def test_change_ta_name(self):
+        self.ta1 = models.User()
+        self.ta1.email = "ta1@uwm.edu"
+        self.ta1.password = "password"
+        self.ta1.type = "ta"
+        self.ta1.save()
+        self.assertEquals(Commands.change_name("ta1@uwm.edu", "TA Guy"), "Name changed.")
+        ta1 = models.User.objects.get(email="ta1@uwm.edu")
+        self.assertEquals(ta1.name, "TA Guy")
+        self.assertNotEquals(ta1.name, "DEFAULT")
+
+    def test_multi_user_change_name(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        self.sup1 = models.User()
+        self.sup1.email = "super1@uwm.edu"
+        self.sup1.password = "password"
+        self.sup1.type = "supervisor"
+        self.sup1.save()
+
+        self.assertEquals(Commands.change_name("admin1@uwm.edu", "Admin Guy"), "Name changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.name, "Admin Guy")
+        self.assertNotEquals(self.ad1.name, "DEFAULT")
+
+    def test_change_max_name(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_name("admin1@uwm.edu",
+                                               "John Jacob Jingle Heimer Schmitenhoffenvuelerstein"), "Name changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.name, "John Jacob Jingle Heimer Schmitenhoffenvuelerstein")
+        self.assertNotEquals(self.ad1.name, "DEFAULT")
+
+    def test_change_min_name(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_name("admin1@uwm.edu", "A"), "Name changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.name, "A")
+        self.assertNotEquals(self.ad1.name, "DEFAULT")
+
+    def test_change_name_too_big(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_name("admin1@uwm.edu",
+                                               "John Jacob Jingle Heimer Schmitenhoffenvuelerstein1"),
+                          "Name must be 50 characters or less.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.name, "DEFAULT")
+        self.assertNotEquals(self.ad1.name, "John Jacob Jingle Heimer Schmitenhoffenvuelerstein1")
+
+    def test_change_name_too_small(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_name("admin1@uwm.edu", ""),
+                          "Bad name.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.name, "DEFAULT")
+        self.assertNotEquals(self.ad1.name, "")
+
+    def test_change_name_no_name(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_name("admin1@uwm.edu")
+
+    def test_change_name_no_email(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_name("Admin Guy")
+
+    def test_change_name_wrong_types(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_name(1, 2)
+
+    def test_change_name_no_args(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_password()
+
+    # address tests
+    def test_change_admin_address(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_address("admin1@uwm.edu", "1234 5th Street Milwaukee, WI 53111"),
+                          "Address changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.address, "1234 5th Street Milwaukee, WI 53111")
+        self.assertNotEquals(self.ad1.address, "not set")
+
+    def test_change_super_address(self):
+        self.sup1 = models.User()
+        self.sup1.email = "super1@uwm.edu"
+        self.sup1.password = "password"
+        self.sup1.type = "supervisor"
+        self.sup1.save()
+        self.assertEquals(Commands.change_address("super1@uwm.edu", "1234 5th Street Milwaukee, WI 53111"),
+                          "Address changed.")
+        sup1 = models.User.objects.get(email="super1@uwm.edu")
+        self.assertEquals(sup1.address, "1234 5th Street Milwaukee, WI 53111")
+        self.assertNotEquals(sup1.address, "not set")
+
+    def test_change_instructor_address(self):
+        self.inst1 = models.User()
+        self.inst1.email = "inst1@uwm.edu"
+        self.inst1.password = "password"
+        self.inst1.type = "instructor"
+        self.inst1.save()
+        self.assertEquals(Commands.change_address("inst1@uwm.edu", "1234 5th Street Milwaukee, WI 53111"),
+                          "Address changed.")
+        inst1 = models.User.objects.get(email="inst1@uwm.edu")
+        self.assertEquals(inst1.address, "1234 5th Street Milwaukee, WI 53111")
+        self.assertNotEquals(inst1.address, "not set")
+
+    def test_change_ta_address(self):
+        self.ta1 = models.User()
+        self.ta1.email = "ta1@uwm.edu"
+        self.ta1.password = "password"
+        self.ta1.type = "ta"
+        self.ta1.save()
+        self.assertEquals(Commands.change_address("ta1@uwm.edu", "1234 5th Street Milwaukee, WI 53111"),
+                          "Address changed.")
+        ta1 = models.User.objects.get(email="ta1@uwm.edu")
+        self.assertEquals(ta1.address, "1234 5th Street Milwaukee, WI 53111")
+        self.assertNotEquals(ta1.address, "not set")
+
+    def test_multi_user_change_address(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        self.sup1 = models.User()
+        self.sup1.email = "super1@uwm.edu"
+        self.sup1.password = "password"
+        self.sup1.type = "supervisor"
+        self.sup1.save()
+
+        self.assertEquals(Commands.change_address("admin1@uwm.edu", "1234 5th Street Milwaukee, WI 53111"),
+                          "Address changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.address, "1234 5th Street Milwaukee, WI 53111")
+        self.assertNotEquals(self.ad1.address, "not set")
+
+    def test_change_max_address(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_address("admin1@uwm.edu",
+                                                 "123456789123 Longstreetnamed St, Except In The Basement, "
+                                                 "Really Big Town Name Like So Huge, NY 21221"),
+                                                 "Address changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.address, "123456789123 Longstreetnamed St, Except In The Basement, "
+                                            "Really Big Town Name Like So Huge, NY 21221")
+        self.assertNotEquals(self.ad1.address, "not set")
+
+    def test_change_min_address(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_address("admin1@uwm.edu", "1"),
+                          "Address changed.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertEquals(self.ad1.address, "1")
+        self.assertNotEquals(self.ad1.address, "not set")
+
+    def test_change_address_too_big(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_address("admin1@uwm.edu",
+                                                  "1123456789123 Longstreetnamed St, Except In The Basement, "
+                                                  "Really Big Town Name Like So Huge, NY 21221"),
+                          "Address must be 100 characters or less.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertNotEquals(self.ad1.address, "1123456789123 Longstreetnamed St, Except In The Basement, "
+                                               "Really Big Town Name Like So Huge, NY 21221")
+        self.assertEquals(self.ad1.address, "not set")
+
+    def test_change_address_too_small(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+        self.assertEquals(Commands.change_address("admin1@uwm.edu", ""),
+                          "Bad address.")
+        self.ad1 = models.User.objects.get(email="admin1@uwm.edu")
+        self.assertNotEquals(self.ad1.address, "")
+        self.assertEquals(self.ad1.address, "not set")
+
+    def test_change_address_no_address(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_address("admin1@uwm.edu")
+
+    def test_change_address_no_email(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_address("1234 5th Street Milwaukee, WI 53111")
+
+    def test_change_address_wrong_types(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_address(1, 2)
+
+    def test_change_address_no_args(self):
+        self.ad1 = models.User()
+        self.ad1.email = "admin1@uwm.edu"
+        self.ad1.password = "password"
+        self.ad1.type = "administrator"
+        self.ad1.save()
+
+        with self.assertRaises(TypeError):
+            Commands.change_address()
