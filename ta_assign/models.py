@@ -25,6 +25,7 @@ class Course(models.Model):
 
 class Lecture(models.Model):
     instructor = models.CharField(max_length=50, default="no instructor")
+    TA = models.CharField(max_length=50, default="no TA")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     lecture_section = models.CharField(max_length=3)
     lecture_location = models.CharField(max_length=50, default="NOT SET")
