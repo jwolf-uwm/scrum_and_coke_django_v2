@@ -183,6 +183,9 @@ class Commands:
         elif field == "name":
             models.User.objects.filter(email=email).update(name=content)
             return "User has been updated successfully"
+        elif field == "address":
+            models.User.objects.filter(email=email).update(address=content)
+            return "User has been updated successfully"
         else:
             return "The entered data field does not exist"
 

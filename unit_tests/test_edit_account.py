@@ -161,6 +161,18 @@ class TestEditAccount(TestCase):
         tester = models.User.objects.get(email="rando@uwm.edu")
         self.assertEqual(tester.name, "Howard Stern")
 
+    def test_edit_account_address(self):
+        # create a test user in the system
+        tester = models.User()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
+        tester.save()
+        # test edit name
+        Commands.edit_account("rando@uwm.edu", "address", "1234 W ABC St")
+
+        tester = models.User.objects.get(email="rando@uwm.edu")
+        self.assertEqual(tester.address, "1234 W ABC St")
+
     def test_edit_account_dne(self):
         tester = models.User()
         tester.email = "rando@uwm.edu"
