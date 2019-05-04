@@ -337,7 +337,7 @@ class Commands:
         if check_lec is None:
             return "no such lecture"
 
-        models.Lecture.objects.filter(course=check_course).update(instructor=email)
+        models.Course.objects.filter(course_id=course_id, course_department=course_department).update(instructor=email)
         ins_course = models.InstructorCourse()
         ins_course.course = check_course
         ins_course.instructor = check_ins
@@ -347,7 +347,7 @@ class Commands:
 
     # Assign TA Commands
     @staticmethod
-    def assign_ta_to_course(email, course_id):
+    def assign_ta_to_course(email, course_id, course_department):
         try:
             check_ta = models.User.objects.get(email=email, type="ta")
         except models.User.DoesNotExist:
@@ -355,7 +355,7 @@ class Commands:
         if check_ta is None:
             return "no such ta"
         try:
-            check_course = models.Course.objects.get(course_id=course_id)
+            check_course = models.Course.objects.get(course_id=course_id, course_department=course_department)
         except models.Course.DoesNotExist:
             check_course = None
         if check_course is None:
@@ -401,11 +401,17 @@ class Commands:
         if check_ta is None:
             return "no such ta"
         try:
-            check_course = models.Course.objects.get(course_id=course_id)
+            check_course = models.Course.objects.get(course_id=course_id, course_department=course_department)
         except models.Course.DoesNotExist:
             check_course = None
         if check_course is None:
             return "no such course"
+        try:
+            check_exist = models.TACourse.objects.get(course=check_course, TA=check_ta)
+        except models.TACourse.DoesNotExist:
+            check_exist = None
+        if check_exist is None:
+            return "TA not assigned to this course!"
         try:
             check_lec = models.Lecture.objects.get(course=check_course, lecture_section=course_section)
         except models.Course.DoesNotExist:

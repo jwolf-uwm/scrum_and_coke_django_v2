@@ -282,10 +282,9 @@ class AssignTAToCourse(View):
 
     def post(self, request):
         email = request.POST["email"]
-        course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
-        course_section = request.POST["course_section"]
-        response = Commands.assign_ta(email, course_id, course_section, course_department)
+        course_department = request.POST["course_department"]
+        response = Commands.assign_ta_to_course(email, course_id, course_department)
         if response == "TA Assigned!":
             messages.success(request, response)
         else:
