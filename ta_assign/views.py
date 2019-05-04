@@ -114,6 +114,39 @@ class CreateCourse(View):
         return render(request, 'main/create_course.html', {"message": [course_department, course_id, num_lectures, num_labs]})
 
 
+# Edit Lecture/Lab
+class EditLecLab(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        return render(request, 'main/edit_lec_lab.html')
+
+    def post(self, request):
+        department = request.POST["course_department"]
+        course_id = request.POST["course_id"]
+        section_type = request.POST["section"]
+        section_id = request.POST["section_id"]
+        location = request.POST["location"]
+        time = request.POST["time"]
+
+        response = Commands.edit_lec_lab(department, course_id, section_type, section_id, location, time)
+
+        if response == "Section has been edited successfully.":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return render(request, 'main/edit_lec_lab.html')
+
+
 # Access Info
 class AccessInfo(View):
 
