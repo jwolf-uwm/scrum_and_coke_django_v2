@@ -347,7 +347,7 @@ class Commands:
 
     # Assign TA Commands
     @staticmethod
-    def assign_ta_to_course(email, course_id, course_section, course_department):
+    def assign_ta_to_course(email, course_id):
         try:
             check_ta = models.User.objects.get(email=email, type="ta")
         except models.User.DoesNotExist:
@@ -407,7 +407,7 @@ class Commands:
         if check_course is None:
             return "no such course"
         try:
-            check_lec = models.Lecture.objects.get(course=check_course)
+            check_lec = models.Lecture.objects.get(course=check_course, lecture_section=course_section)
         except models.Course.DoesNotExist:
             check_lec = None
         if check_lec is not None:
@@ -415,6 +415,14 @@ class Commands:
                 return "TA cannot be assigned to this lecture(labs exist)!"
             models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
             return "TA Assigned to Lecture!"
+
+        try:
+            check_lab = models.Lab.objects.get(course=check_course, lab_section=course_section)
+        except models.Lab.DoesNotExist:
+            return "No Such Lab or Lecture"
+        models.Lab.objects.filter(course=check_course, lab_section=course_section).update(TA=email)
+        return "TA Assigned to Lab!"
+
 
     # View TA Assign Commands
 
