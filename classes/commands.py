@@ -351,3 +351,19 @@ class Commands:
 
 
         return
+
+    # Delete Account
+    @staticmethod
+    def delete_account(email):
+
+        people = models.ModelPerson.objects.filter(email=email)
+
+        if len(people) != 1:
+            raise AttributeError
+        person = people[0]
+        if person.isLoggedOn is False:
+            return False
+        models.User.objects.filter(email=email).update(isLoggedOn=False)
+        return True
+
+        return
