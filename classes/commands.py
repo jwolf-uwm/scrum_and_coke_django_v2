@@ -42,6 +42,9 @@ class Commands:
         # Jeff's method
         # Usage: (string: email, string: password, string: account_type)
 
+        if len(email) > 50:
+            return "Email address must be 50 characters or less."
+
         try:
             find_email = models.User.objects.get(email=email)
         except models.User.DoesNotExist:
@@ -60,6 +63,9 @@ class Commands:
         except IndexError:
             return "Bad email address."
 
+        if len(password) > 20:
+            return "Password must be 20 characters or less."
+
         if password == "":
             return "Bad password."
 
@@ -76,33 +82,54 @@ class Commands:
 
     # Create Course Commands
     @staticmethod
-    def create_course(course_id, num_labs):
-        if len(course_id) != 9:
-            return "course_id is the wrong size to be of the right form (CS###-###)"
-        if course_id[0:2] != "CS":
-            return "course_id is not a CS course (CS###-###)"
-        if not course_id[2:5].isdigit():
-            return "The course number contains an invalid digit (CS###-###)"
-        if course_id[5] != "-":
-            return "The course and section number should be separated by a hyphen (CS###-###)"
-        if not course_id[6:].isdigit():
-            return "The section number contains an invalid digit (CS###-###)"
+    def create_course(department, course_id, num_lectures, num_labs):
+        good_dept = ["COMPSCI", "ELECENG", "PHYSICS", "MATH", "BIOMED", "CIVIL", "INDENG", "MATENG",
+                     "MECHENG", "STRUCENG", "WEBDEV"]
+        if department not in good_dept:
+            return "That department is not offered"
+        if not course_id.isdigit():
+            return "Course ID must be a number"
+        if int(course_id) < 101 or int(course_id) > 999:
+            return "Course ID must be 3 digits long and between 101 and 999"
+        if not num_labs.isdigit():
+            return "Number of lab sections must be a number"
+        if not num_lectures.isdigit():
+            return "Number of lecture sections must be a number"
+        if int(num_labs) < 0 or int(num_labs) > 5:
+            return "Number of lab sections cannot be less than 0 or greater than 5"
+        if int(num_lectures) < 1 or int(num_lectures) > 5:
+            return "Number of lecture sections cannot be less than 1 or greater than 5"
+
         try:
-            if int(num_labs) < 0 or int(num_labs) > 5:
-                return "The number of lab sections should be positive and not exceed 5"
-        except ValueError:
-            return "num_labs must be an valid number"
-        try:
-            find_course = models.Course.objects.get(course_id=course_id)
+            find_course = models.Course.objects.get(course_department=department, course_id=course_id)
         except models.Course.DoesNotExist:
             find_course = "none"
         if find_course != "none":
             return "Course already exists"
 
         some_course = models.Course()
+        some_course.course_department = department
         some_course.course_id = course_id
+        some_course.num_lectures = num_lectures
         some_course.num_labs = num_labs
         some_course.save()
+
+        for i in range(int(num_labs)):
+            lab = models.Lab()
+            lab.lab_section = 801 + i
+            lab.course = some_course
+            lab.save()
+
+        for i in range(int(num_lectures)):
+            lec = models.Lecture()
+            if int(num_labs) == 0:
+                temp = 1+i
+                lec.lecture_section = "00" + str(temp)
+            else:
+                lec.lecture_section = 401 + i
+            lec.course = some_course
+            lec.save()
+
         return "Course created successfully"
 
     # Access Info Commands
@@ -110,59 +137,15 @@ class Commands:
     def access_info():
         # Jeff's method
         # Usage: access_info()
-        # returns a string of all users/courses in the system
-        # with appropriate linebreaks for display
-        # TODO: REWRITE TO MODEL LIST
-
-        string_list = "Administrator:\n"
-
-        admins = models.User.objects.filter(type="administrator")
-        for admin in admins:
-            string_list = string_list + admin.name + " | " + admin.email + " | " + \
-                          str(admin.phone) + "\n"
-            string_list = string_list + "\n"
-
-        string_list = string_list + "Supervisor:\n"
-
-        supers = models.User.objects.filter(type="supervisor")
-        for supervi in supers:
-            string_list = string_list + supervi.name + " | " + supervi.email + " | " + \
-                          str(supervi.phone) + "\n"
-            string_list = string_list + "\n"
-
-        string_list = string_list + "Instructors:\n"
-
-        instructs = models.User.objects.filter(type="instructor")
-        for instruct in instructs:
-            string_list = string_list + instruct.name + " | " + instruct.email + " | " + \
-                          str(instruct.phone) + "\n"
-
-            for courses in models.Course.objects.all():
-                if courses.instructor == instruct.email:
-                    string_list = string_list + "\tCourse: " + courses.course_id + "\n"
-            string_list = string_list + "\n"
-
-        string_list = string_list + "\n"
-
-        string_list = string_list + "TAs:\n"
-
-        tee_ayys = models.User.objects.filter(type="ta")
-        for tee_ayy in tee_ayys:
-            string_list = string_list + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone) + \
-                          "\n"
-
-            for ta_courses in models.TACourse.objects.all():
-                if ta_courses.TA.email == tee_ayy.email:
-                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
-            string_list = string_list + "\n"
-
-        string_list = string_list + "\n"
-
-        string_list = string_list + "Courses:\n"
+        # returns a list with two lists, one with all users, the other with all courses
+        # from there, it's up to something else to format it
+        stuff = []
+        users = models.User.objects.all()
         courses = models.Course.objects.all()
-        for course in courses:
-            string_list = string_list + course.course_id + "\n"
-        return string_list
+        stuff.append(users)
+        stuff.append(courses)
+
+        return stuff
 
     # Edit Account Commands
     @staticmethod
@@ -200,6 +183,9 @@ class Commands:
         elif field == "name":
             models.User.objects.filter(email=email).update(name=content)
             return "User has been updated successfully"
+        elif field == "address":
+            models.User.objects.filter(email=email).update(address=content)
+            return "User has been updated successfully"
         else:
             return "The entered data field does not exist"
 
@@ -209,11 +195,18 @@ class Commands:
         if new == "":
             return "Bad password."
 
+        if len(new) > 20:
+            return "Password must be 20 characters or less."
+
         models.User.objects.filter(email=email).update(password=new)
         return "Password changed."
 
     @staticmethod
     def change_email(email, address):
+
+        if len(address) > 50:
+            return "Email address must be 50 characters or less."
+
         parse_at = address.split("@")
 
         try:
@@ -235,6 +228,12 @@ class Commands:
 
     @staticmethod
     def change_name(email, name):
+        if len(name) > 50:
+            return "Name must be 50 characters or less."
+
+        if name == "":
+            return "Bad name."
+
         models.User.objects.filter(email=email).update(name=name)
         return "Name changed."
 
@@ -252,12 +251,23 @@ class Commands:
         models.User.objects.filter(email=email).update(phone=phone)
         return "Phone number changed."
 
+    @staticmethod
+    def change_address(email, address):
+        if len(address) > 100:
+            return "Address must be 100 characters or less."
+
+        if address == "":
+            return "Bad address."
+
+        models.User.objects.filter(email=email).update(address=address)
+        return "Address changed."
+
     # View Info Commands
     @staticmethod
     def view_info(email):
 
         this_guy = models.User.objects.get(email=email)
-        info_list = [this_guy.email, this_guy.password, this_guy.name, this_guy.phone]
+        info_list = [this_guy.email, this_guy.password, this_guy.name, this_guy.phone, this_guy.address]
 
         return info_list
 
@@ -313,7 +323,7 @@ class Commands:
             ta_course.save()
             return "TA Assigned!"
         else:
-            return "Ta Already Assigned!"
+            return "TA Already Assigned!"
     # View course assignments
     @staticmethod
     def view_course_assignments(instructor):
@@ -347,9 +357,6 @@ class Commands:
     # Read Public Contact Info Commands
     @staticmethod
     def read_public(email):
-
-
-
         return
 
     # Delete Account

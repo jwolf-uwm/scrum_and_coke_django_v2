@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 
 # Create your models here.
@@ -9,21 +10,39 @@ class User(models.Model):
     name = models.CharField(max_length=50, default="DEFAULT")
     type = models.CharField(max_length=20, default="person")
     isLoggedOn = models.BooleanField(default=False)
+    address = models.CharField(max_length=100, default="not set")
 
 
 class Course(models.Model):
-    course_id = models.CharField(max_length=10)
-    num_labs = models.IntegerField(default=0)
-    instructor = models.CharField(max_length=50, default="no Instructor")
-    current_num_TA = models.IntegerField(default=0)
-    # temp disabled
-    # tee_ays = models.ForeignKey(ModelTA, on_delete=models.CASCADE)
+    course_department = models.CharField(max_length=6)
+    course_id = models.PositiveSmallIntegerField(default=0)
+    num_lectures = models.PositiveSmallIntegerField(default=0)
+    num_labs = models.PositiveSmallIntegerField(default=0)
+    current_num_TA = models.PositiveSmallIntegerField(default=0)
+    current_num_lectures = models.PositiveSmallIntegerField(default=0)
+    current_num_labs = models.PositiveSmallIntegerField(default=0)
+
+
+class Lecture(models.Model):
+    instructor = models.CharField(max_length=50, default="no instructor")
+    TA = models.CharField(max_length=50, default="no TA")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lecture_section = models.CharField(max_length=3)
+    lecture_location = models.CharField(max_length=50, default="NOT SET")
+    lecture_time = models.TimeField(default=datetime.time(16, 00))
 
 
 class Lab(models.Model):
     TA = models.CharField(max_length=50, default="no TA")
-    section_id = models.IntegerField(default=0)
-    course_id = models.CharField(max_length=10)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lab_section = models.CharField(max_length=3)
+    lab_location = models.CharField(max_length=50)
+    lab_time = models.TimeField(default=datetime.time(16, 00))
+
+
+class InstructorCourse(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    instructor = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class TACourse(models.Model):

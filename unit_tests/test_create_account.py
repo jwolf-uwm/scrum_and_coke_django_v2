@@ -25,6 +25,8 @@ class TestCreateAccount(TestCase):
         self.assertEqual(test_model_ins.phone, "000.000.0000")
         # login false test
         self.assertFalse(test_model_ins.isLoggedOn)
+        # default address test
+        self.assertEqual(test_model_ins.address, "not set")
 
     def test_create_account_TA(self):
         # Create TA Tests
@@ -42,6 +44,8 @@ class TestCreateAccount(TestCase):
         self.assertEqual(test_model_ta.phone, "000.000.0000")
         # login false test
         self.assertFalse(test_model_ta.isLoggedOn)
+        # default address test
+        self.assertEqual(test_model_ta.address, "not set")
 
     # Invalid account type tests
     def test_create_account_supervisor(self):
@@ -110,7 +114,7 @@ class TestCreateAccount(TestCase):
 
     def test_create_account_invalid_parameter_wrong_arg_types(self):
         # int args
-        with self.assertRaises(AttributeError):
+        with self.assertRaises(TypeError):
             Commands.create_account(7, 8, 9)
         with self.assertRaises(models.User.DoesNotExist):
             models.User.objects.get(email=7)
@@ -123,3 +127,34 @@ class TestCreateAccount(TestCase):
     def test_bad_password(self):
         self.assertEquals(Commands.create_account("bad_password@uwm.edu", "", "ta"), "Bad password.")
 
+    def test_create_account_max_email(self):
+        self.assertEquals(Commands.create_account("thereallylongemailaddresslikefiftychars123@uwm.edu",
+                                                  "better_password", "instructor"), "Account created!")
+        test_model_ins = models.User.objects.get(email="thereallylongemailaddresslikefiftychars123@uwm.edu")
+        self.assertEqual(test_model_ins.email, "thereallylongemailaddresslikefiftychars123@uwm.edu")
+
+    def test_create_account_email_too_big(self):
+        self.assertEquals(Commands.create_account("thereallylongemailaddresslikefiftychars1123@uwm.edu",
+                                                  "better_password", "instructor"), "Email address must be 50 "
+                                                                                    "characters or less.")
+
+    def test_create_account_min_email(self):
+        self.assertEquals(Commands.create_account("i@uwm.edu", "better_password", "instructor"), "Account created!")
+        test_model_ins = models.User.objects.get(email="i@uwm.edu")
+        self.assertEqual(test_model_ins.email, "i@uwm.edu")
+
+    def test_create_account_max_password(self):
+        self.assertEquals(Commands.create_account("DustyBottoms@uwm.edu", "bigol20charpassword1", "instructor"),
+                          "Account created!")
+        test_model_ins = models.User.objects.get(email="DustyBottoms@uwm.edu")
+        self.assertEqual(test_model_ins.password, "bigol20charpassword1")
+
+    def test_create_account_password_too_big(self):
+        self.assertEquals(Commands.create_account("DustyBottoms@uwm.edu", "bigol20charpassword11", "instructor"),
+                          "Password must be 20 characters or less.")
+
+    def test_create_account_min_password(self):
+        self.assertEquals(Commands.create_account("DustyBottoms@uwm.edu", "1", "instructor"),
+                          "Account created!")
+        test_model_ins = models.User.objects.get(email="DustyBottoms@uwm.edu")
+        self.assertEqual(test_model_ins.password, "1")

@@ -99,24 +99,19 @@ class CreateCourse(View):
         return render(request, 'main/create_course.html')
 
     def post(self, request):
+        course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
-        course_section = request.POST["course_section"]
+        num_lectures = request.POST["num_lectures"]
         num_labs = request.POST["num_labs"]
 
-        response = Commands.create_course("CS"+course_id+"-"+course_section, num_labs)
-        num = int(num_labs)
-        for i in range(num):
-            lab = models.Lab()
-            lab.section_id = 801 + i
-            lab.course_id = "CS"+course_id+"-"+course_section
-            lab.save()
+        response = Commands.create_course(course_department, course_id, num_lectures, num_labs)
 
         if response == "Course has been created successfully.":
             messages.success(request, response)
         else:
             messages.error(request, response)
 
-        return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
+        return render(request, 'main/create_course.html', {"message": [course_department, course_id, num_lectures, num_labs]})
 
 
 # Access Info
@@ -135,9 +130,13 @@ class AccessInfo(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        response = Commands.access_info()
-        messages.success(request, response)
-        return render(request, 'main/access_info.html')
+        users = models.User.objects.all()
+        courses = models.Course.objects.all()
+        lectures = models.Lecture.objects.all()
+        labs = models.Lab.objects.all()
+
+        return render(request, 'main/access_info.html', {"users": users, "courses": courses, "lectures": lectures,
+                                                         "labs": labs})
 
 
 # Edit Account
@@ -182,7 +181,8 @@ class EditInfo(View):
         some_guy = models.User.objects.get(email=request.session.get("email"))
 
         return render(request, 'main/edit_info.html', {"some_email": some_guy.email, "some_password": some_guy.password,
-                                                       "some_name": some_guy.name, "some_phone": some_guy.phone})
+                                                       "some_name": some_guy.name, "some_phone": some_guy.phone,
+                                                       "some_address": some_guy.address})
 
     @staticmethod
     def post(request):
@@ -190,6 +190,7 @@ class EditInfo(View):
         password = request.POST["password"]
         name = request.POST["name"]
         phone = request.POST["phone"]
+        address = request.POST["address"]
         pick_anything = False
 
         if email != "":
@@ -224,6 +225,15 @@ class EditInfo(View):
             response = Commands.change_phone(request.session["email"], phone)
 
             if response == "Phone number changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if address != "":
+            pick_anything = True
+            response = Commands.change_address(request.session["email"], address)
+
+            if response == "Address changed.":
                 messages.success(request, response)
             else:
                 messages.error(request, response)

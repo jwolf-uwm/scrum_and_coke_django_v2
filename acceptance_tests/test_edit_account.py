@@ -143,6 +143,19 @@ class EditAccountTests(TestCase):
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
 
+    def test_admin_edit_admin_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "ta_assign_admin@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
     def test_admin_edit_super_email(self):
         client = Client()
         session = client.session
@@ -191,6 +204,19 @@ class EditAccountTests(TestCase):
 
         response = client.post('/edit_account/', data={'email': "ta_assign_super@uwm.edu", 'field': "phone",
                                                        'data': "414.123.4567"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
+    def test_admin_edit_super_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "ta_assign_super@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
@@ -247,6 +273,19 @@ class EditAccountTests(TestCase):
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
 
+    def test_admin_edit_instructor_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "instructor@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
     def test_admin_edit_ta_email(self):
         client = Client()
         session = client.session
@@ -295,6 +334,19 @@ class EditAccountTests(TestCase):
 
         response = client.post('/edit_account/', data={'email': "ta@uwm.edu", 'field': "phone",
                                                        'data': "414.123.4567"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
+    def test_admin_edit_ta_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "ta@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
@@ -351,6 +403,19 @@ class EditAccountTests(TestCase):
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
 
+    def test_super_edit_admin_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "ta_assign_admin@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
     def test_super_edit_super_email(self):
         client = Client()
         session = client.session
@@ -399,6 +464,19 @@ class EditAccountTests(TestCase):
 
         response = client.post('/edit_account/', data={'email': "ta_assign_super@uwm.edu", 'field': "phone",
                                                        'data': "414.123.4567"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
+    def test_super_edit_super_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "ta_assign_super@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
@@ -455,6 +533,19 @@ class EditAccountTests(TestCase):
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
 
+    def test_super_edit_instructor_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "instructor@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
     def test_super_edit_ta_email(self):
         client = Client()
         session = client.session
@@ -503,6 +594,19 @@ class EditAccountTests(TestCase):
 
         response = client.post('/edit_account/', data={'email': "ta@uwm.edu", 'field': "phone",
                                                        'data': "414.123.4567"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit Account")
+        self.assertContains(response, "User has been updated successfully")
+
+    def test_super_edit_ta_address(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.post('/edit_account/', data={'email': "ta@uwm.edu", 'field': "address",
+                                                       'data': "NEW FRICKEN ADDRESS MAN"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "User has been updated successfully")
@@ -610,5 +714,3 @@ class EditAccountTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Edit Account")
         self.assertContains(response, "The entered data field does not exist")
-
-
