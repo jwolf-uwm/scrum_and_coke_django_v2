@@ -255,10 +255,10 @@ class AssignInstructorToCourse(View):
 
     def post(self, request):
         email1 = request.POST["email"]
+        course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
-        command_course = "CS" + course_id + "-" + course_section
-        response = Commands.assign_instructor(email1, command_course)
+        response = Commands.assign_instructor(email1, course_id, course_section, course_department)
 
         if response == "Instructor Assigned!":
             messages.success(request, response)
@@ -282,10 +282,10 @@ class AssignTAToCourse(View):
 
     def post(self, request):
         email = request.POST["email"]
+        course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
-        command_input = "CS" + course_id + "-" + course_section
-        response = Commands.assign_ta(email, command_input)
+        response = Commands.assign_ta(email, course_id, course_section, course_department)
         if response == "TA Assigned!":
             messages.success(request, response)
         else:
