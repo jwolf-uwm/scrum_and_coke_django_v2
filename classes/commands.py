@@ -165,7 +165,6 @@ class Commands:
                 lab.update(lab_time=time)
         else:
             return "Invalid section type"
-
         return "Section has been edited successfully."
 
     # Access Info Commands
