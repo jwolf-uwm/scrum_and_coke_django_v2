@@ -368,9 +368,11 @@ class Commands:
         if len(people) != 1:
             return "Such User does not exit"
         person = people[0]
+        if person.type == "administrator" or person.type == "supervisor":
+            return "You cannot delete this account"
         if person.type == "TA":
             # Labs = models.Lab.objects.filter(email=person.email)
-            models.Lab.objects.filter(TA=person.email).update(TA = "no TA")
+            models.Lab.objects.filter(TA=person.email).update(TA="no TA")
         models.User.objects.filter(email=person.email).delete()
-        return True
+        return email+" has been deleted successfully"
 
