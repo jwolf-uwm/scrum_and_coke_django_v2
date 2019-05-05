@@ -1,7 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>{{ course_dept_id }}</h1>
+    <h1>Course: {{ course_dept_id }}</h1>
     <div class="access_info">
+        <h2>Instructors</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+            </tr>
+            {% for instructor in instructors %}
+            <tr>
+                <td>{{ instructor.name }}</td>
+                <td>{{ instructor.email }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h2>TAs</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+            </tr>
+            {% for ta in tas %}
+            <tr>
+                <td>{{ ta.name }}</td>
+                <td>{{ ta.email }}</td>
+            </tr>
+            {% endfor %}
+        </table>
         <h2>Lectures</h2>
         <table>
             <tr class="heading">
@@ -17,8 +43,8 @@
                     {{ lecture.lecture_section }}</td>
                 <td>{{ lecture.instructor }}</td>
                 <td>{{ lecture.TA }}</td>
-                <td>{{ lecture.location }}</td>
-                <td>{{ lecture.time }}</td>
+                <td>{{ lecture.lecture_location }}</td>
+                <td>{{ lecture.lecture_time }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -36,8 +62,8 @@
             <tr>
                 <td>{{ lab.course.course_department}}{{ lab.course.course_id }}-{{ lab.lab_section }}</td>
                 <td>{{ lab.TA }}</td>
-                <td>{{ lab.location }}</td>
-                <td>{{ lab.time }}</td>
+                <td>{{ lab.lab_location }}</td>
+                <td>{{ lab.lab_time }}</td>
             </tr>
             {% endfor %}
         </table>

@@ -146,13 +146,19 @@ class CourseView(View):
         course = models.Course.objects.get(course_dept_id=course_dept_id)
         labs = models.Lab.objects.filter(course=course)
         lectures = models.Lecture.objects.filter(course=course)
+
+        instructor_courses = models.InstructorCourse.objects.filter(course=course)
+        instructors = []
+        for instructor_course in instructor_courses:
+            instructors.append(instructor_course.instructor)
+
         ta_courses = models.TACourse.objects.filter(course=course)
         tas = []
         for ta_course in ta_courses:
             tas.append(ta_course.TA)
 
         return render(request, 'main/course.html', {"course_dept_id": course_dept_id, "labs": labs,
-                                                    "lectures": lectures, "tas": tas})
+                                                    "lectures": lectures, "instructors": instructors, "tas": tas})
 
 
 # Edit Account

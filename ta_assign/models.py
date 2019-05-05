@@ -37,7 +37,7 @@ class Lab(models.Model):
     TA = models.CharField(max_length=50, default="no TA")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     lab_section = models.CharField(max_length=3)
-    lab_location = models.CharField(max_length=50)
+    lab_location = models.CharField(max_length=50, default="NOT SET")
     lab_time = models.TimeField(default=datetime.time(16, 00))
 
 

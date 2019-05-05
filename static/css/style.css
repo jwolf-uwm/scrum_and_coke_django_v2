@@ -51,8 +51,6 @@ body {
 }
 
 .access_info table {
-    width: 100%;
-    margin: auto;
     border: 1px solid black;
     border-spacing: 0;
 }
@@ -60,6 +58,8 @@ body {
 .access_info td {
     text-align: center;
     border: 1px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .access_info tr:nth-child(even) {
