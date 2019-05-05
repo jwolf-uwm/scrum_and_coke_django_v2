@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-        <h1>Assign TA to Course</h1>
-        <form method="POST" id="assign_ta_form">
+
+        <h1>Assign Instructor To Lecture</h1>
+        <form method="POST" id="assign_instructor_form">
             {% csrf_token %}
-             <label for="name">TA email:</label>
+             <label for="name">Instructor email:</label>
             <input type="text" id="email" name="email">
-            <br>
+            <br><br>
             <tr>
                 <td><label for="course_department">Select the Course Department:</label></td>
                 <td><select id="course_department" name="course_department" style="width: 100%;" required>
@@ -25,6 +26,9 @@
             <label for="course_id">Enter the Course ID:</label>
             <br>
             <input type="number" id="course_id" name="course_id" min="101" max="999" required>
+            <label for="course_section">-</label>
+            <input type="number" id="course_section" name="course_section" placeholder="401" min="401" max="410" required>
+            <br><br>
             <br><br>
             <input type="submit">
         </form>
