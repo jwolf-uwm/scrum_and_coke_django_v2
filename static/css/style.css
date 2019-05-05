@@ -99,13 +99,17 @@ body {
 }
 
 .access_info a {
-    color: #032863;
+    color: #082493;
     font-weight: bold;
 }
 
 .access_info a:visited {
-    color: #032863;
+    color: #082493;
     font-weight: bold;
+}
+
+.access_info a:hover {
+    color: #3b60ef;
 }
 
 .heading {
