@@ -367,6 +367,14 @@ class Commands:
             check_exist = None
         if check_exist is None:
             return "Instructor not assigned to this course!"
+        try:
+            check_lec = models.Lecture.objects.get(course=check_course, lecture_section=course_section)
+        except models.Lecture.DoesNotExist:
+            check_lec = None
+        if check_lec is None:
+            return "Lecture section does not exist"
+        models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
+        return "Instructor assigned to lecture"
 
     # View course assignments
     @staticmethod
