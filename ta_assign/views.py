@@ -130,13 +130,14 @@ class AccessInfo(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        users = models.User.objects.all()
+        admin = models.User.objects.get(type="administrator")
+        supervisor = models.User.objects.get(type="supervisor")
+        instructors = models.User.objects.filter(type="instructor")
+        tas = models.User.objects.filter(type="ta")
         courses = models.Course.objects.all()
-        lectures = models.Lecture.objects.all()
-        labs = models.Lab.objects.all()
 
-        return render(request, 'main/access_info.html', {"users": users, "courses": courses, "lectures": lectures,
-                                                         "labs": labs})
+        return render(request, 'main/access_info.html', {"admin": admin, "super": supervisor,
+                                                         "instructors": instructors, "tas": tas, "courses": courses})
 
 
 class CourseView(View):
@@ -159,6 +160,26 @@ class CourseView(View):
 
         return render(request, 'main/course.html', {"course_dept_id": course_dept_id, "labs": labs,
                                                     "lectures": lectures, "instructors": instructors, "tas": tas})
+
+
+class InstructorView(View):
+    def get(self, request, **kwargs):
+        instructor_email = self.kwargs["instructor_email"]
+
+        instructor = models.User.objects.get(email=instructor_email)
+
+        instructor_courses = models.InstructorCourse.objects.filter(instructor=instructor)
+        courses = []
+        for instructor_course in instructor_courses:
+            courses.append(instructor_course.course)
+
+        instructor_lectures = models.Lecture.objects.filter(instructor=instructor.email)
+        lectures = []
+        for instructor_lecture in instructor_lectures:
+            lectures.append(instructor_lecture)
+
+        return render(request, 'main/instructor.html', {"instructor_name": instructor.name, "instructor": instructor,
+                                                        "courses": courses, "lectures": lectures})
 
 
 # Edit Account

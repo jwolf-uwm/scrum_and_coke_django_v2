@@ -4,29 +4,83 @@
     <h1>Access Info</h1>
 
     <div class="access_info">
-        <h2>Users</h2>
+
+        <h2>Administrator</h2>
         <table>
             <tr class="heading">
-                <td>Role</td>
                 <td>Name</td>
                 <td>Email</td>
                 <td>Password</td>
                 <td>Phone</td>
                 <td>Address</td>
             </tr>
-            {% for user in users %}
             <tr>
-                <td>{{ user.type }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.phone }}</td>
-                <td>{{ user.address }}</td>
+                <td>{{ admin.name }}</td>
+                <td>{{ admin.email }}</td>
+                <td>{{ admin.password }}</td>
+                <td>{{ admin.phone }}</td>
+                <td>{{ admin.address }}</td>
+            </tr>
+        </table>
+
+        <h2>Supervisor</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Password</td>
+                <td>Phone</td>
+                <td>Address</td>
+            </tr>
+            <tr>
+                <td>{{ super.name }}</td>
+                <td>{{ super.email }}</td>
+                <td>{{ super.password }}</td>
+                <td>{{ super.phone }}</td>
+                <td>{{ super.address }}</td>
+            </tr>
+        </table>
+
+        <h2>Instructors</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Password</td>
+                <td>Phone</td>
+                <td>Address</td>
+            </tr>
+            {% for instructor in instructors %}
+            <tr>
+                <td><a href="{% url 'Instructor1' instructor_email=instructor.email %}">{{ instructor.name }}</a></td>
+                <td>{{ instructor.email }}</td>
+                <td>{{ instructor.password }}</td>
+                <td>{{ instructor.phone }}</td>
+                <td>{{ instructor.address }}</td>
             </tr>
             {% endfor %}
         </table>
-    </div>
-    <div class="access_info">
+
+        <h2>TAs</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Password</td>
+                <td>Phone</td>
+                <td>Address</td>
+            </tr>
+            {% for ta in tas %}
+            <tr>
+                <td>{{ ta.name }}</td>
+                <td>{{ ta.email }}</td>
+                <td>{{ ta.password }}</td>
+                <td>{{ ta.phone }}</td>
+                <td>{{ ta.address }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
         <h2>Courses</h2>
         <table>
             <tr class="heading">
@@ -45,5 +99,6 @@
             </tr>
             {% endfor %}
         </table>
+
     </div>
 {% endblock content %}
