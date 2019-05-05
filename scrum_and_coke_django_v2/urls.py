@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from ta_assign.views import Index, Login, Logout, CreateAccount, AccessInfo, CreateCourse, EditAccount, EditInfo,\
-    AssignInstructorToCourse, AssignTAToCourse, ViewCourseAssignments, CourseView, AssignTAToLabLec,\
+    EditLecLab, AssignInstructorToCourse, AssignTAToCourse, ViewCourseAssignments, CourseView, AssignTAToLabLec,\
     AssignInstructorToLecture, InstructorView, ViewTAAssign, TAView, DeleteAccount
 
 urlpatterns = [
@@ -30,6 +30,7 @@ urlpatterns = [
     path('create_course/', CreateCourse.as_view(), name='CreateCourse1'),
     path('access_info/', AccessInfo.as_view(), name='AccessInfo1'),
     path('edit_account/', EditAccount.as_view(), name='EditAccount1'),
+    path('edit_lec_lab/', EditLecLab.as_view(), name='EditLecLab1'),
     path('assign_ta/', AssignTAToCourse.as_view(), name='AssignTACourse1'),
     path('assign_instructor/', AssignInstructorToCourse.as_view(), name='AssignInstructor1'),
     path('assign_ta_lablec/', AssignTAToLabLec.as_view(), name='AssignTALabLec1'),

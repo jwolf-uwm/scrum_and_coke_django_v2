@@ -190,6 +190,41 @@ class Commands:
         else:
             return "The entered data field does not exist"
 
+    @staticmethod
+    def edit_lec_lab(department, course_id, section_type, section_id, location, time):
+        good_dept = ["COMPSCI", "ELECENG", "PHYSICS", "MATH", "BIOMED", "CIVIL", "INDENG", "MATENG",
+                     "MECHENG", "STRUCENG", "WEBDEV"]
+        if department not in good_dept:
+            return "That department is not offered"
+        try:
+            course = models.Course.objects.get(course_department=department, course_id=course_id)
+        except models.Course.DoesNotExist:
+            return "That course does not exist"
+        print(section_type)
+        if section_type == "lecture":
+            try:
+                models.Lecture.objects.get(course=course, lecture_section=section_id)
+            except models.Lecture.DoesNotExist:
+                return "That lecture does not exist"
+            lecture = models.Lecture.objects.filter(course=course, lecture_section=section_id)
+            if location != "":
+                lecture.update(lecture_location=location)
+            if time != "":
+                lecture.update(lecture_time=time)
+        elif section_type == "lab":
+            try:
+                models.Lab.objects.get(course=course, lab_section=section_id)
+            except models.Lab.DoesNotExist:
+                return "That lab does not exist"
+            lab = models.Lab.objects.filter(course=course, lab_section=section_id)
+            if location != "":
+                lab.update(lab_location=location)
+            if time != "":
+                lab.update(lab_time=time)
+        else:
+            return "Invalid section type"
+        return "Section has been edited successfully."
+
     # Edit Info Commands
     @staticmethod
     def change_password(email, new):
