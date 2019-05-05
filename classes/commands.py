@@ -430,7 +430,6 @@ class Commands:
         models.Lab.objects.filter(course=check_course, lab_section=course_section).update(TA=email)
         return "TA Assigned to Lab!"
 
-
     # View TA Assign Commands
 
     @staticmethod
@@ -442,11 +441,11 @@ class Commands:
 
             for ta_courses in models.TACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
+                    string_list = string_list + "\tCourse: " + ta_courses.course.course_dept_id + "\n"
 
                 for ta_lab in models.Lab.objects.all():
                     if ta_lab.TA == tee_ayy.email:
-                        string_list = string_list + "Lab: " + ta_lab.section_id + "\n"
+                        string_list = string_list + "\tLab: " + ta_lab.lab_section + "\n"
                 string_list = string_list + "\n"
 
         return string_list
