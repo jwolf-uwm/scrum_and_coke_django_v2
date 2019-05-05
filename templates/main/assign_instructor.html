@@ -6,7 +6,7 @@
             {% csrf_token %}
              <label for="name">Instructor email:</label>
             <input type="text" id="email" name="email">
-            <br><br>
+            <br>
             <tr>
                 <td><label for="course_department">Select the Course Department:</label></td>
                 <td><select id="course_department" name="course_department" required>
@@ -23,8 +23,8 @@
                         <option value="WEBDEV">WEBDEV</option>
                     </select></td>
             </tr>
-            <label for="course_id">Enter the Course ID:</label>
             <br>
+            <label for="course_id">Enter the Course ID:</label>
             <input type="number" id="course_id" name="course_id" min="101" max="999" required>
             <br><br>
             <input type="submit">
