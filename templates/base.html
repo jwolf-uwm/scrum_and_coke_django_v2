@@ -8,25 +8,48 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel = "stylesheet" href =
+            "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 <body>
     <h1>TA Assigninator 5000</h1>
-    <div id="nav">
-        <ul class="menu">
-            <li class="menu"><a href="/index">Home</a></li> |
-            <li class="menu"><a href="/login">Login</a></li> |
-            <li class="menu"><a href="/logout">Logout</a></li> |
-            <li class="menu"><a href="/create_account">Create Account</a></li> |
-            <li class="menu"><a href="/create_course">Create Course</a></li> |
-            <li class="menu"><a href="/access_info">Access Info</a></li> |
-            <li class="menu"><a href="/edit_account">Edit Account</a></li> |
-            <li class="menu"><a href="/edit_info">Edit Info</a></li> |
-            <li class="menu"><a href="/assign_instructor">Assign Instructor</a></li> |
-            <li class="menu"><a href="/assign_ta">Assign TA</a></li> |
-            <li class="menu"><a href="/assign_ta">View Course Assignments</a></li> |
-            <li class="menu"><a href="/view_ta_assign">View TA Assign</a></li> |
-            <li class="menu"><a href="/delete_account">Delete Account</a></li>
-        </ul>
+    <div class="navbar">
+            <a href="/index">Home</a>
+            <a href="/login">Login</a>
+            <a href="/logout">Logout</a>
+            <div class="dropdown">
+                <button class="dropbtn">Create
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/create_account">Create Account</a>
+                    <a href="/create_course">Create Course</a>
+                </div>
+            </div>
+            <a href="/access_info">Access Info</a>
+            <div class="dropdown">
+                <button class="dropbtn">Edit
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/edit_account">Edit Account</a>
+                    <a href="/edit_info">Edit Info</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Assign
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/assign_instructor">Assign Instructor(Course)</a>
+                    <a href="/assign_ta">Assign TA(Course)</a>
+                    <a href="/assign_instructor_lec">Assign Instructor(Lecture)</a>
+                    <a href="/assign_ta_lablec">Assign TA(Lab/Lecture)</a>
+                </div>
+            </div>
+            <a href="/view_course_assignments">View Course Assignments</a>
+            <a href="/view_ta_assign">View TA Assign</a>
+            <a href="/delete_account">Delete Account</a>
     </div>
     {% block content %}{% endblock content %}
 </body>

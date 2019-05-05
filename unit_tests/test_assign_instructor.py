@@ -35,11 +35,15 @@ class AssignInstructorTests(TestCase):
         ins1.email = "ins1@uwm.edu"
         ins1.type = "instructor"
         ins1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_instructor(ins1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_instructor_to_course(ins1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "Instructor Assigned!")
 
     def test_assign_improper_instructor(self):
@@ -47,11 +51,15 @@ class AssignInstructorTests(TestCase):
         ins1.email = "ins1@uwm.edu"
         ins1.type = "instructor"
         ins1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_instructor("ins2@uwm.edu", course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_instructor_to_course("ins2@uwm.edu", course.course_id, course.course_department)
         self.assertEqual(proper, "no such instructor")
 
     def test_assign_improper_course(self):
@@ -59,11 +67,15 @@ class AssignInstructorTests(TestCase):
         ins1.email = "ins1@uwm.edu"
         ins1.type = "instructor"
         ins1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_instructor(ins1.email, "CS302-002")
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_instructor_to_course(ins1.email, "302", course.course_department)
         self.assertEqual(proper, "no such course")
 
     def test_assign_instructor_TA(self):
@@ -71,11 +83,15 @@ class AssignInstructorTests(TestCase):
         ta1.email = "ta1@uwm.edu"
         ta1.type = "ta"
         ta1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_instructor(ta1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_instructor_to_course(ta1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "no such instructor")
 
     def test_assign_instructor_admin(self):
@@ -83,11 +99,15 @@ class AssignInstructorTests(TestCase):
         ad1.email = "ad1@uwm.edu"
         ad1.type = "administrator"
         ad1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_instructor(ad1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_instructor_to_course(ad1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "no such instructor")
 
     def test_assign_instructor_sup(self):
@@ -95,9 +115,13 @@ class AssignInstructorTests(TestCase):
         sup1.email = "sup1@uwm.edu"
         sup1.type = "supervisor"
         sup1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_instructor(sup1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_instructor_to_course(sup1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "no such instructor")

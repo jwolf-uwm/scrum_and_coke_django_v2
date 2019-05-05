@@ -88,8 +88,10 @@ class AssignInstructorTests(TestCase):
         course = models.Course()
         course.num_labs = 2
         course.current_num_TA = 0
+        course.num_lectures = 1
         course.instructor = "DEFAULT"
-        course.course_id = "CS301-401"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
         course.save()
 
         client = Client()
@@ -98,7 +100,7 @@ class AssignInstructorTests(TestCase):
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/assign_instructor/', data={'email': "instructor@uwm.edu", 'course_id': "301",
-                                                         'course_section': "401"}, follow="true")
+                                                         'course_department': "COMPSCI"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor")
         self.assertContains(response, "Instructor Assigned!")
@@ -112,8 +114,10 @@ class AssignInstructorTests(TestCase):
         course = models.Course()
         course.num_labs = 2
         course.current_num_TA = 0
+        course.num_lectures = 1
         course.instructor = "DEFAULT"
-        course.course_id = "CS301-401"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
         course.save()
 
         client = Client()
@@ -122,7 +126,7 @@ class AssignInstructorTests(TestCase):
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/assign_instructor/', data={'email': "ins@uwm.edu", 'course_id': "301",
-                                                            'course_section': "401"}, follow="true")
+                                                            'course_department': "COMPSCI"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor")
         self.assertContains(response, "no such instructor")
@@ -136,8 +140,10 @@ class AssignInstructorTests(TestCase):
         course = models.Course()
         course.num_labs = 2
         course.current_num_TA = 0
+        course.num_lectures = 1
         course.instructor = "DEFAULT"
-        course.course_id = "CS301-401"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
         course.save()
 
         client = Client()
@@ -146,12 +152,12 @@ class AssignInstructorTests(TestCase):
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/assign_instructor/', data={'email': "instructor@uwm.edu", 'course_id': "302",
-                                                            'course_section': "401"}, follow="true")
+                                                            'course_department': "COMPSCI"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor")
         self.assertContains(response, "no such course")
 
-    def test_invalid_course_id(self):
+    def test_invalid_dept(self):
         inst1 = models.User()
         inst1.email = "instructor@uwm.edu"
         inst1.type = "instructor"
@@ -160,8 +166,10 @@ class AssignInstructorTests(TestCase):
         course = models.Course()
         course.num_labs = 2
         course.current_num_TA = 0
+        course.num_lectures = 1
         course.instructor = "DEFAULT"
-        course.course_id = "CS301-401"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
         course.save()
 
         client = Client()
@@ -170,7 +178,7 @@ class AssignInstructorTests(TestCase):
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/assign_instructor/', data={'email': "instructor@uwm.edu", 'course_id': "301",
-                                                            'course_section': "403"}, follow="true")
+                                                            'course_department': "PHYSICS"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor")
         self.assertContains(response, "no such course")
@@ -184,8 +192,10 @@ class AssignInstructorTests(TestCase):
         course = models.Course()
         course.num_labs = 2
         course.current_num_TA = 0
+        course.num_lectures = 1
         course.instructor = "DEFAULT"
-        course.course_id = "CS301-401"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
         course.save()
 
         client = Client()
@@ -194,7 +204,7 @@ class AssignInstructorTests(TestCase):
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/assign_instructor/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                            'course_section': "401"}, follow="true")
+                                                            'course_department': "COMPSCI"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor")
         self.assertContains(response, "no such instructor")
@@ -208,8 +218,10 @@ class AssignInstructorTests(TestCase):
         course = models.Course()
         course.num_labs = 2
         course.current_num_TA = 0
+        course.num_lectures = 1
         course.instructor = "DEFAULT"
-        course.course_id = "CS301-401"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
         course.save()
 
         client = Client()
@@ -218,7 +230,7 @@ class AssignInstructorTests(TestCase):
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/assign_instructor/', data={'email': "admin@uwm.edu", 'course_id': "301",
-                                                            'course_section': "401"}, follow="true")
+                                                            'course_department': "COMPSCI"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor")
         self.assertContains(response, "no such instructor")
@@ -232,8 +244,10 @@ class AssignInstructorTests(TestCase):
         course = models.Course()
         course.num_labs = 2
         course.current_num_TA = 0
+        course.num_lectures = 1
         course.instructor = "DEFAULT"
-        course.course_id = "CS301-401"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
         course.save()
 
         client = Client()
@@ -242,7 +256,7 @@ class AssignInstructorTests(TestCase):
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/assign_instructor/', data={'email': "sup@uwm.edu", 'course_id': "301",
-                                                            'course_section': "401"}, follow="true")
+                                                            'course_department': "COMPSCI"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor")
         self.assertContains(response, "no such instructor")
