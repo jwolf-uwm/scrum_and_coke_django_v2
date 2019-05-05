@@ -110,6 +110,7 @@ class Commands:
         some_course = models.Course()
         some_course.course_department = department
         some_course.course_id = course_id
+        some_course.course_dept_id = department + str(course_id)
         some_course.num_lectures = num_lectures
         some_course.num_labs = num_labs
         some_course.save()
