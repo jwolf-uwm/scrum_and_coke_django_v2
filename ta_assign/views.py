@@ -182,6 +182,31 @@ class InstructorView(View):
                                                         "courses": courses, "lectures": lectures})
 
 
+class TAView(View):
+    def get(self, request, **kwargs):
+        ta_email = self.kwargs["ta_email"]
+
+        ta = models.User.objects.get(email=ta_email)
+
+        ta_courses = models.TACourse.objects.filter(TA=ta)
+        courses = []
+        for ta_course in ta_courses:
+            courses.append(ta_course.course)
+
+        ta_lectures = models.Lecture.objects.filter(TA=ta.email)
+        lectures = []
+        for ta_lecture in ta_lectures:
+            lectures.append(ta_lecture)
+
+        ta_labs = models.Lab.objects.filter(TA=ta.email)
+        labs = []
+        for ta_lab in ta_labs:
+            labs.append(ta_lab)
+
+        return render(request, 'main/TA.html', {"ta_name": ta.name, "ta": ta, "courses": courses, "labs": labs,
+                                                "lectures": lectures})
+
+
 # Edit Account
 class EditAccount(View):
     def get(self, request):

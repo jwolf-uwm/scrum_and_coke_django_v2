@@ -72,7 +72,7 @@
             </tr>
             {% for ta in tas %}
             <tr>
-                <td>{{ ta.name }}</td>
+                <td><a href="{% url 'TA1' ta_email=ta.email %}">{{ ta.name }}</a></td>
                 <td>{{ ta.email }}</td>
                 <td>{{ ta.password }}</td>
                 <td>{{ ta.phone }}</td>
