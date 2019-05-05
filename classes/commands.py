@@ -332,11 +332,12 @@ class Commands:
             if check_exist is None:
                 numta = check_course.current_num_TA
                 numlec = check_course.num_lectures
-                if check_course.num_labs is not 0 and numta+1 > check_course.num_labs:
+                if check_course.num_labs != 0 and numta+1 > check_course.num_labs:
                     return "Too Many TA's Assigned"
                 elif numta+1 > numlec:
                     return "Too Many TA's Assigned"
-                models.Course.objects.filter(course_id=course_id).update(current_num_TA=numta+1)
+                models.Course.objects.filter(course_id=course_id, course_department=course_department).\
+                    update(current_num_TA=numta+1)
                 ta_course = models.TACourse()
                 ta_course.TA = check_ta
                 ta_course.course = check_course

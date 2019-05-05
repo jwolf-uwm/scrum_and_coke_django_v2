@@ -117,7 +117,7 @@ class AssignTACourse(TestCase):
         ta3.type = "ta"
         ta3.save()
         course = models.Course()
-        course.num_labs = 1
+        course.num_labs = 2
         course.current_num_TA = 0
         course.num_lectures = 1
         course.instructor = "DEFAULT"
