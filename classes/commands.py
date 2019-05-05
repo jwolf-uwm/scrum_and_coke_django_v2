@@ -387,19 +387,26 @@ class Commands:
         return string_list
 
     @staticmethod
-    def assign_ta_to_lablec(email, course_id, course_section, course_department):
-        try:
-            check_ta = models.User.objects.get(email=email, type="ta")
-        except models.User.DoesNotExist:
-            check_ta = None
-        if check_ta is None:
-            return "no such ta"
+    def assign_ta_to_lablec(ins, email, course_id, course_section, course_department):
+        inst = models.User.objects.get(email=ins, type="instructor")
         try:
             check_course = models.Course.objects.get(course_id=course_id, course_department=course_department)
         except models.Course.DoesNotExist:
             check_course = None
         if check_course is None:
             return "no such course"
+        try:
+            valid = models.InstructorCourse.objects.get(course=check_course, instructor=inst)
+        except models.InstructorCourse.DoesNotExist:
+            valid = None
+        if valid is None:
+            return "You are not assigned to this course"
+        try:
+            check_ta = models.User.objects.get(email=email, type="ta")
+        except models.User.DoesNotExist:
+            check_ta = None
+        if check_ta is None:
+            return "no such ta"
         try:
             check_exist = models.TACourse.objects.get(course=check_course, TA=check_ta)
         except models.TACourse.DoesNotExist:
@@ -408,7 +415,7 @@ class Commands:
             return "TA not assigned to this course!"
         try:
             check_lec = models.Lecture.objects.get(course=check_course, lecture_section=course_section)
-        except models.Course.DoesNotExist:
+        except models.Lecture.DoesNotExist:
             check_lec = None
         if check_lec is not None:
             if check_course.num_labs is not 0:
