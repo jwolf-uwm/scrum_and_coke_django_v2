@@ -28,11 +28,15 @@ class AssignTACourse(TestCase):
         ta1.email = "ta1@uwm.edu"
         ta1.type = "ta"
         ta1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_ta("ta2@uwm.edu", course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course("ta2@uwm.edu", course.course_id, course.course_department)
         self.assertEqual(proper, "no such ta")
 
     def test_assign_ta_improper_course(self):
@@ -40,11 +44,15 @@ class AssignTACourse(TestCase):
         ta1.email = "ta1@uwm.edu"
         ta1.type = "ta"
         ta1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_ta(ta1.email, "CS302-002")
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course(ta1.email, "302", course.course_department)
         self.assertEqual(proper, "no such course")
 
     def test_assign_ta_admin(self):
@@ -52,11 +60,15 @@ class AssignTACourse(TestCase):
         ad1.email = "ad1@uwm.edu"
         ad1.type = "administrator"
         ad1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_ta(ad1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course(ad1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "no such ta")
 
     def test_assign_ta_sup(self):
@@ -64,11 +76,15 @@ class AssignTACourse(TestCase):
         sup1.email = "sup1@uwm.edu"
         sup1.type = "supervisor"
         sup1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_ta(sup1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course(sup1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "no such ta")
 
     def test_assign_ta_ins(self):
@@ -76,11 +92,15 @@ class AssignTACourse(TestCase):
         ins1.email = "ins1@uwm.edu"
         ins1.type = "instructor"
         ins1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_ta(ins1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course(ins1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "no such ta")
 
     def test_assign_ta_too_many(self):
@@ -96,15 +116,19 @@ class AssignTACourse(TestCase):
         ta3.email = "ta3@uwm.edu"
         ta3.type = "ta"
         ta3.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 2
-        course1.save()
-        proper = Commands.assign_ta(ta1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 1
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course(ta1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "TA Assigned!")
-        proper = Commands.assign_ta(ta2.email, course1.course_id)
+        proper = Commands.assign_ta_to_course(ta2.email, course.course_id, course.course_department)
         self.assertEqual(proper, "TA Assigned!")
-        proper = Commands.assign_ta(ta3.email, course1.course_id)
+        proper = Commands.assign_ta_to_course(ta3.email, course.course_id, course.course_department)
         self.assertEqual(proper, "Too Many TA's Assigned")
 
     def test_assign_ta_already_assigned(self):
@@ -112,11 +136,15 @@ class AssignTACourse(TestCase):
         ta1.email = "ta1@uwm.edu"
         ta1.type = "ta"
         ta1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 2
-        course1.save()
-        proper = Commands.assign_ta(ta1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course(ta1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "TA Assigned!")
-        proper = Commands.assign_ta(ta1.email, course1.course_id)
+        proper = Commands.assign_ta_to_course(ta1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "TA Already Assigned!")
