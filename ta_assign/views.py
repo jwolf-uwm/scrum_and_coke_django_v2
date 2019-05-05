@@ -304,7 +304,7 @@ class AssignInstructorToLecture(View):
         if not account_type == "supervisor":
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
-        return render(request, 'main/assign_ta.html')
+        return render(request, 'main/assign_instructor_lec.html')
 
     def post(self, request):
         email = request.POST["email"]
@@ -315,7 +315,8 @@ class AssignInstructorToLecture(View):
             messages.success(request, response)
         else:
             messages.error(request, response)
-        return render(request, 'main/assign_ta.html')
+        return render(request, 'main/assign_instructor_lec.html')
+
 
 class AssignTAToLabLec(View):
     def get(self, request):
@@ -326,7 +327,7 @@ class AssignTAToLabLec(View):
         if not account_type == "supervisor":
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
-        return render(request, 'main/assign_ta.html')
+        return render(request, 'main/assign_ta_lablec.html')
 
     def post(self, request):
         email = request.POST["email"]
@@ -337,7 +338,7 @@ class AssignTAToLabLec(View):
             messages.success(request, response)
         else:
             messages.error(request, response)
-        return render(request, 'main/assign_ta.html')
+        return render(request, 'main/assign_ta_lablec.html')
 
 # View course assignments
 
