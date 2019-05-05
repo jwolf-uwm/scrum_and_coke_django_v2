@@ -30,6 +30,8 @@ urlpatterns = [
     path('edit_account/', EditAccount.as_view(), name='EditAccount1'),
     path('assign_ta/', AssignTAToCourse.as_view(), name='AssignTACourse1'),
     path('assign_instructor/', AssignInstructorToCourse.as_view(), name='AssignInstructor1'),
+    path('assign_ta_lablec/', AssignTAToCourse.as_view(), name='AssignTACourse1'),
+    path('assign_instructor/', AssignInstructorToCourse.as_view(), name='AssignInstructor1'),
     path('view_course_assignments/', ViewCourseAssignments.as_view(), name='ViewCourseAssignments1'),
     path('edit_info/', EditInfo.as_view(), name='EditInfo1'),
 ]

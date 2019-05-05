@@ -261,8 +261,7 @@ class AssignInstructorToCourse(View):
         email1 = request.POST["email"]
         course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
-        course_section = request.POST["course_section"]
-        response = Commands.assign_instructor(email1, course_id, course_section, course_department)
+        response = Commands.assign_instructor_to_course(email1, course_id, course_department)
 
         if response == "Instructor Assigned!":
             messages.success(request, response)
@@ -274,6 +273,51 @@ class AssignInstructorToCourse(View):
 
 
 class AssignTAToCourse(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_ta.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_department = request.POST["course_department"]
+        response = Commands.assign_ta_to_course(email, course_id, course_department)
+        if response == "TA Assigned!":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+        return render(request, 'main/assign_ta.html')
+
+
+class AssignInstructorToLecture(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_ta.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_department = request.POST["course_department"]
+        response = Commands.assign_ta_to_course(email, course_id, course_department)
+        if response == "TA Assigned!":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+        return render(request, 'main/assign_ta.html')
+
+class AssignTAToLabLec(View):
     def get(self, request):
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
