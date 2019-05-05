@@ -335,7 +335,7 @@ class Commands:
                 numlec = check_course.num_lectures
                 if check_course.num_labs != 0 and numta+1 > check_course.num_labs:
                     return "Too Many TA's Assigned"
-                elif numta+1 > numlec:
+                elif numta+1 > numlec and check_course.num_labs == 0:
                     return "Too Many TA's Assigned"
                 models.Course.objects.filter(course_id=course_id, course_department=course_department).\
                     update(current_num_TA=numta+1)
