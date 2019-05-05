@@ -12,11 +12,15 @@ class AssignTACourse(TestCase):
         ta1.email = "ta1@uwm.edu"
         ta1.type = "ta"
         ta1.save()
-        course1 = models.Course()
-        course1.course_id = "CS301-001"
-        course1.num_labs = 3
-        course1.save()
-        proper = Commands.assign_ta(ta1.email, course1.course_id)
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.instructor = "DEFAULT"
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+        proper = Commands.assign_ta_to_course(ta1.email, course.course_id, course.course_department)
         self.assertEqual(proper, "TA Assigned!")
 
     def test_assign_ta_course_improper_ta(self):
