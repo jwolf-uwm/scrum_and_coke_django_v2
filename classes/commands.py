@@ -430,7 +430,6 @@ class Commands:
         models.Lab.objects.filter(course=check_course, lab_section=course_section).update(TA=email)
         return "TA Assigned to Lab!"
 
-
     # View TA Assign Commands
 
     @staticmethod
