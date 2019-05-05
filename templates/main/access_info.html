@@ -17,7 +17,7 @@
             <tr>
                 <td>{{ admin.name }}</td>
                 <td>{{ admin.email }}</td>
-                <td>{{ admin.password }}</td>
+                <td class="spoiler">{{ admin.password }}</td>
                 <td>{{ admin.phone }}</td>
                 <td>{{ admin.address }}</td>
             </tr>
@@ -35,7 +35,7 @@
             <tr>
                 <td>{{ super.name }}</td>
                 <td>{{ super.email }}</td>
-                <td>{{ super.password }}</td>
+                <td class="spoiler">{{ super.password }}</td>
                 <td>{{ super.phone }}</td>
                 <td>{{ super.address }}</td>
             </tr>
@@ -54,7 +54,7 @@
             <tr>
                 <td><a href="{% url 'Instructor1' instructor_email=instructor.email %}">{{ instructor.name }}</a></td>
                 <td>{{ instructor.email }}</td>
-                <td>{{ instructor.password }}</td>
+                <td class="spoiler">{{ instructor.password }}</td>
                 <td>{{ instructor.phone }}</td>
                 <td>{{ instructor.address }}</td>
             </tr>
@@ -74,7 +74,7 @@
             <tr>
                 <td><a href="{% url 'TA1' ta_email=ta.email %}">{{ ta.name }}</a></td>
                 <td>{{ ta.email }}</td>
-                <td>{{ ta.password }}</td>
+                <td class="spoiler">{{ ta.password }}</td>
                 <td>{{ ta.phone }}</td>
                 <td>{{ ta.address }}</td>
             </tr>

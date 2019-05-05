@@ -84,10 +84,10 @@ body {
 }
 
 .access_info td {
-    text-align: center;
     border: 1px solid black;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: left;
 }
 
 .access_info tr:nth-child(even) {
@@ -96,6 +96,15 @@ body {
 
 .access_info tr:nth-child(odd) {
     background-color: #ffffff;
+}
+
+td.spoiler  {
+    color: black;
+    background-color: black;
+}
+
+td.spoiler:hover {
+    color: white;
 }
 
 .access_info a {
