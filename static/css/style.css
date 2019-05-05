@@ -62,7 +62,7 @@ body {
 }
 
 .dropdown-content a:hover {
-  background-color: #ddd;
+  background-color: #b6e9f9;
 }
 
 .dropdown:hover .dropdown-content {
@@ -91,7 +91,7 @@ body {
 }
 
 .access_info tr:nth-child(even) {
-    background-color: lightgray;
+    background-color: #b1b4b5;
 }
 
 .access_info tr:nth-child(odd) {
