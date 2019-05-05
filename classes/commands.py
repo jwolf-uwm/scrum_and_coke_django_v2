@@ -455,3 +455,23 @@ class Commands:
     @staticmethod
     def read_public(email):
         return
+
+    # Delete Account
+    @staticmethod
+    def delete_account(email):
+
+        people = models.User.objects.filter(email=email)
+
+        if len(people) != 1:
+            return "Such User does not exit"
+        person = people[0]
+        if person.type == "administrator" or person.type == "supervisor":
+            return "You cannot delete this account"
+        if person.type == "TA":
+            # Labs = models.Lab.objects.filter(email=person.email)
+            models.Lab.objects.filter(TA=person.email).update(TA="no TA")
+        if person.type == "instructor":
+            return
+        models.User.objects.filter(email=person.email).delete()
+        return email+" has been deleted successfully"
+

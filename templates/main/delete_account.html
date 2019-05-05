@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>Delete Account</h1>
+    <p>Please be very careful when deleting accounts</p>
+    <p>Once you delete an account, you cannot retrieve data</p>
+    <form method="POST" id="create_account_form">
+        {% csrf_token %}
+        <label for="email">Email address:</label>
+        <input type="text" id="email" name="email">
+        <br><br>
+        <input type="submit">
+    </form>
+
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+{% endblock content %}

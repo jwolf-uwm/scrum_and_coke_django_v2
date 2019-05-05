@@ -432,3 +432,30 @@ class ViewCourseAssignments(View):
         messages.success(request, response)
         return render(request, 'main/view_course_assignments.html')
 # View TA Assign
+
+
+class DeleteAccount(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/delete_account.html')
+
+    def post(self, request):
+        username = request.POST["email"]
+        response = Commands.delete_account(username)
+
+        if response == "Command successful.":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return redirect("Delete1")
+
+
