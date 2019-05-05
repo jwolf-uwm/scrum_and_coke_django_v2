@@ -1,19 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
 
-        <h1>Assign Instructor</h1>
+        <h1>Assign Instructor To Course</h1>
         <form method="POST" id="assign_instructor_form">
             {% csrf_token %}
              <label for="name">Instructor email:</label>
             <input type="text" id="email" name="email">
-            <br><br>
-            <label for="course_id">Enter the Course ID:</label>
             <br>
-            CS
+            <tr>
+                <td><label for="course_department">Select the Course Department:</label></td>
+                <td><select id="course_department" name="course_department" required>
+                        <option value="COMPSCI">COMPSCI</option>
+                        <option value="ELECENG">ELECENG</option>
+                        <option value="PHYSICS">PHYSICS</option>
+                        <option value="MATH">MATH</option>
+                        <option value="BIOMED">BIOMED</option>
+                        <option value="CIVIL">CIVIL</option>
+                        <option value="INDENG">INDENG</option>
+                        <option value="MATENG">MATENG</option>
+                        <option value="MECHENG">MECHENG</option>
+                        <option value="STRUCENG">STRUCENG</option>
+                        <option value="WEBDEV">WEBDEV</option>
+                    </select></td>
+            </tr>
+            <br>
+            <label for="course_id">Enter the Course ID:</label>
             <input type="number" id="course_id" name="course_id" min="101" max="999" required>
-            <label for="course_section">-</label>
-            <input type="number" id="course_section" name="course_section" placeholder="401" min="401" max="410" required>
-            <br><br>
             <br><br>
             <input type="submit">
         </form>

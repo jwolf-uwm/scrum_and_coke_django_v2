@@ -163,13 +163,81 @@ class AccessInfo(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        users = models.User.objects.all()
+        admin = models.User.objects.get(type="administrator")
+        supervisor = models.User.objects.get(type="supervisor")
+        instructors = models.User.objects.filter(type="instructor")
+        tas = models.User.objects.filter(type="ta")
         courses = models.Course.objects.all()
-        lectures = models.Lecture.objects.all()
-        labs = models.Lab.objects.all()
 
-        return render(request, 'main/access_info.html', {"users": users, "courses": courses, "lectures": lectures,
-                                                         "labs": labs})
+        return render(request, 'main/access_info.html', {"admin": admin, "super": supervisor,
+                                                         "instructors": instructors, "tas": tas, "courses": courses})
+
+
+class CourseView(View):
+    def get(self, request, **kwargs):
+        course_dept_id = self.kwargs["course_dept_id"]
+
+        course = models.Course.objects.get(course_dept_id=course_dept_id)
+        labs = models.Lab.objects.filter(course=course)
+        lectures = models.Lecture.objects.filter(course=course)
+
+        instructor_courses = models.InstructorCourse.objects.filter(course=course)
+        instructors = []
+        for instructor_course in instructor_courses:
+            instructors.append(instructor_course.instructor)
+
+        ta_courses = models.TACourse.objects.filter(course=course)
+        tas = []
+        for ta_course in ta_courses:
+            tas.append(ta_course.TA)
+
+        return render(request, 'main/course.html', {"course_dept_id": course_dept_id, "labs": labs,
+                                                    "lectures": lectures, "instructors": instructors, "tas": tas})
+
+
+class InstructorView(View):
+    def get(self, request, **kwargs):
+        instructor_email = self.kwargs["instructor_email"]
+
+        instructor = models.User.objects.get(email=instructor_email)
+
+        instructor_courses = models.InstructorCourse.objects.filter(instructor=instructor)
+        courses = []
+        for instructor_course in instructor_courses:
+            courses.append(instructor_course.course)
+
+        instructor_lectures = models.Lecture.objects.filter(instructor=instructor.email)
+        lectures = []
+        for instructor_lecture in instructor_lectures:
+            lectures.append(instructor_lecture)
+
+        return render(request, 'main/instructor.html', {"instructor_name": instructor.name, "instructor": instructor,
+                                                        "courses": courses, "lectures": lectures})
+
+
+class TAView(View):
+    def get(self, request, **kwargs):
+        ta_email = self.kwargs["ta_email"]
+
+        ta = models.User.objects.get(email=ta_email)
+
+        ta_courses = models.TACourse.objects.filter(TA=ta)
+        courses = []
+        for ta_course in ta_courses:
+            courses.append(ta_course.course)
+
+        ta_lectures = models.Lecture.objects.filter(TA=ta.email)
+        lectures = []
+        for ta_lecture in ta_lectures:
+            lectures.append(ta_lecture)
+
+        ta_labs = models.Lab.objects.filter(TA=ta.email)
+        labs = []
+        for ta_lab in ta_labs:
+            labs.append(ta_lab)
+
+        return render(request, 'main/TA.html', {"ta_name": ta.name, "ta": ta, "courses": courses, "labs": labs,
+                                                "lectures": lectures})
 
 
 # Edit Account
@@ -292,10 +360,9 @@ class AssignInstructorToCourse(View):
 
     def post(self, request):
         email1 = request.POST["email"]
+        course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
-        course_section = request.POST["course_section"]
-        command_course = "CS" + course_id + "-" + course_section
-        response = Commands.assign_instructor(email1, command_course)
+        response = Commands.assign_instructor_to_course(email1, course_id, course_department)
 
         if response == "Instructor Assigned!":
             messages.success(request, response)
@@ -320,14 +387,62 @@ class AssignTAToCourse(View):
     def post(self, request):
         email = request.POST["email"]
         course_id = request.POST["course_id"]
-        course_section = request.POST["course_section"]
-        command_input = "CS" + course_id + "-" + course_section
-        response = Commands.assign_ta(email, command_input)
+        course_department = request.POST["course_department"]
+        response = Commands.assign_ta_to_course(email, course_id, course_department)
         if response == "TA Assigned!":
             messages.success(request, response)
         else:
             messages.error(request, response)
         return render(request, 'main/assign_ta.html')
+
+
+class AssignInstructorToLecture(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_instructor_lec.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        course_department = request.POST["course_department"]
+        response = Commands.assign_instructor_to_lec(email, course_id, course_section, course_department)
+        if response == "Instructor assigned to lecture":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+        return render(request, 'main/assign_instructor_lec.html')
+
+
+class AssignTAToLabLec(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "instructor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_ta_lablec.html')
+
+    def post(self, request):
+        ins = request.session.get("email")
+        email = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        course_department = request.POST["course_department"]
+        response = Commands.assign_ta_to_lablec(ins, email, course_id, course_section, course_department)
+        if response == "TA Assigned!":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+        return render(request, 'main/assign_ta_lablec.html')
 
 # View course assignments
 
@@ -349,4 +464,52 @@ class ViewCourseAssignments(View):
         response = Commands.view_course_assignments(request.session.get("email"))
         messages.success(request, response)
         return render(request, 'main/view_course_assignments.html')
+
 # View TA Assign
+
+
+class ViewTAAssign(View):
+
+    @staticmethod
+    def get(request):
+
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "instructor" and not account_type == "ta":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        response = Commands.view_ta_assign()
+        messages.success(request, response)
+        return render(request, 'main/view_ta_assign.html')
+
+
+class DeleteAccount(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/delete_account.html')
+
+    def post(self, request):
+        username = request.POST["email"]
+        response = Commands.delete_account(username)
+
+        if response == "Command successful.":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return redirect("Delete1")
+
+

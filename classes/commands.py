@@ -110,6 +110,7 @@ class Commands:
         some_course = models.Course()
         some_course.course_department = department
         some_course.course_id = course_id
+        some_course.course_dept_id = department + str(course_id)
         some_course.num_lectures = num_lectures
         some_course.num_labs = num_labs
         some_course.save()
@@ -308,7 +309,7 @@ class Commands:
 
     # Assign Instructor Commands
     @staticmethod
-    def assign_instructor(email, course):
+    def assign_instructor_to_course(email, course_id, course_department):
         try:
             check_ins = models.User.objects.get(email=email, type="instructor")
         except models.User.DoesNotExist:
@@ -316,19 +317,35 @@ class Commands:
         if check_ins is None:
             return "no such instructor"
         try:
-            check_course = models.Course.objects.get(course_id=course)
+            check_course = models.Course.objects.get(course_id=course_id, course_department=course_department)
         except models.Course.DoesNotExist:
             check_course = None
         if check_course is None:
             return "no such course"
 
-        models.Course.objects.filter(course_id=course).update(instructor=email)
+        else:
+            try:
+                check_exist = models.InstructorCourse.objects.get(course=check_course, instructor=check_ins)
+            except models.InstructorCourse.DoesNotExist:
+                check_exist = None
 
-        return "Instructor Assigned!"
+            if check_exist is None:
+                numins = check_course.current_num_lectures
+                if numins+1 > check_course.num_lectures:
+                    return "Too Many Instructors Assigned"
+                models.Course.objects.filter(course_id=course_id, course_department=course_department).\
+                    update(current_num_lectures=numins+1)
+                ins_course = models.InstructorCourse()
+                ins_course.course = check_course
+                ins_course.instructor = check_ins
+                ins_course.save()
+                return "Instructor Assigned!"
+            else:
+                return "Instructor Already Assigned!"
 
     # Assign TA Commands
     @staticmethod
-    def assign_ta(email, course):
+    def assign_ta_to_course(email, course_id, course_department):
         try:
             check_ta = models.User.objects.get(email=email, type="ta")
         except models.User.DoesNotExist:
@@ -336,29 +353,64 @@ class Commands:
         if check_ta is None:
             return "no such ta"
         try:
-            check_course = models.Course.objects.get(course_id=course)
+            check_course = models.Course.objects.get(course_id=course_id, course_department=course_department)
         except models.Course.DoesNotExist:
             check_course = None
         if check_course is None:
             return "no such course"
 
-        try:
-            check_exist = models.TACourse.objects.get(course=check_course, TA=check_ta)
-        except models.TACourse.DoesNotExist:
-            check_exist = None
-
-        if check_exist is None:
-            numta = check_course.current_num_TA
-            if numta+1>check_course.num_labs:
-                return "Too Many TA's Assigned"
-            models.Course.objects.filter(course_id=course).update(current_num_TA=numta+1)
-            ta_course = models.TACourse()
-            ta_course.TA = check_ta
-            ta_course.course = check_course
-            ta_course.save()
-            return "TA Assigned!"
         else:
-            return "TA Already Assigned!"
+            try:
+                check_exist = models.TACourse.objects.get(course=check_course, TA=check_ta)
+            except models.TACourse.DoesNotExist:
+                check_exist = None
+
+            if check_exist is None:
+                numta = check_course.current_num_TA
+                numlec = check_course.num_lectures
+                if check_course.num_labs != 0 and numta+1 > check_course.num_labs:
+                    return "Too Many TA's Assigned"
+                elif numta+1 > numlec and check_course.num_labs == 0:
+                    return "Too Many TA's Assigned"
+                models.Course.objects.filter(course_id=course_id, course_department=course_department).\
+                    update(current_num_TA=numta+1)
+                ta_course = models.TACourse()
+                ta_course.TA = check_ta
+                ta_course.course = check_course
+                ta_course.save()
+                return "TA Assigned!"
+            else:
+                return "TA Already Assigned!"
+
+    @staticmethod
+    def assign_instructor_to_lec(email, course_id, course_section, course_department):
+        try:
+            check_ins = models.User.objects.get(email=email, type="instructor")
+        except models.User.DoesNotExist:
+            check_ins = None
+        if check_ins is None:
+            return "no such instructor"
+        try:
+            check_course = models.Course.objects.get(course_id=course_id, course_department=course_department)
+        except models.Course.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such course"
+        try:
+            check_exist = models.InstructorCourse.objects.get(course=check_course, instructor=check_ins)
+        except models.InstructorCourse.DoesNotExist:
+            check_exist = None
+        if check_exist is None:
+            return "Instructor not assigned to this course!"
+        try:
+            check_lec = models.Lecture.objects.get(course=check_course, lecture_section=course_section)
+        except models.Lecture.DoesNotExist:
+            check_lec = None
+        if check_lec is None:
+            return "Lecture section does not exist"
+        models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
+        return "Instructor assigned to lecture"
+
     # View course assignments
     @staticmethod
     def view_course_assignments(instructor):
@@ -368,6 +420,50 @@ class Commands:
             string_list = string_list + course.course_id + " \n"
 
         return string_list
+
+    @staticmethod
+    def assign_ta_to_lablec(ins, email, course_id, course_section, course_department):
+        inst = models.User.objects.get(email=ins, type="instructor")
+        try:
+            check_course = models.Course.objects.get(course_id=course_id, course_department=course_department)
+        except models.Course.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such course"
+        try:
+            valid = models.InstructorCourse.objects.get(course=check_course, instructor=inst)
+        except models.InstructorCourse.DoesNotExist:
+            valid = None
+        if valid is None:
+            return "You are not assigned to this course"
+        try:
+            check_ta = models.User.objects.get(email=email, type="ta")
+        except models.User.DoesNotExist:
+            check_ta = None
+        if check_ta is None:
+            return "no such ta"
+        try:
+            check_exist = models.TACourse.objects.get(course=check_course, TA=check_ta)
+        except models.TACourse.DoesNotExist:
+            check_exist = None
+        if check_exist is None:
+            return "TA not assigned to this course!"
+        try:
+            check_lec = models.Lecture.objects.get(course=check_course, lecture_section=course_section)
+        except models.Lecture.DoesNotExist:
+            check_lec = None
+        if check_lec is not None:
+            if check_course.num_labs is not 0:
+                return "TA cannot be assigned to this lecture(labs exist)!"
+            models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
+            return "TA Assigned to Lecture!"
+
+        try:
+            check_lab = models.Lab.objects.get(course=check_course, lab_section=course_section)
+        except models.Lab.DoesNotExist:
+            return "No Such Lab or Lecture"
+        models.Lab.objects.filter(course=check_course, lab_section=course_section).update(TA=email)
+        return "TA Assigned to Lab!"
 
     # View TA Assign Commands
 
@@ -380,11 +476,11 @@ class Commands:
 
             for ta_courses in models.TACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
+                    string_list = string_list + "\tCourse: " + ta_courses.course.course_dept_id + "\n"
 
                 for ta_lab in models.Lab.objects.all():
                     if ta_lab.TA == tee_ayy.email:
-                        string_list = string_list + "Lab: " + ta_lab.section_id + "\n"
+                        string_list = string_list + "\tLab: " + ta_lab.lab_section + "\n"
                 string_list = string_list + "\n"
 
         return string_list
@@ -393,3 +489,24 @@ class Commands:
     @staticmethod
     def read_public(email):
         return
+
+    # Delete Account
+    @staticmethod
+    def delete_account(email):
+
+        people = models.User.objects.filter(email=email)
+
+        if len(people) != 1:
+            return "Such User does not exist"
+        person = people[0]
+        if person.type == "administrator" or person.type == "supervisor":
+            return "You cannot delete this account"
+        if person.type == "TA":
+            # Labs = models.Lab.objects.filter(email=person.email)
+            models.Lab.objects.filter(TA=person.email).update(TA="no TA")
+        if person.type == "instructor":
+            models.InstructorCourse.objects.filter()
+            models.Lecture.objects.filter(instructor=person.email).update(instructor="no instructor")
+        models.User.objects.filter(email=person.email).delete()
+        return email+" has been deleted successfully"
+
