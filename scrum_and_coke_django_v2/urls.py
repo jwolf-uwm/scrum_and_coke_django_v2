@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
 from ta_assign.views import Index, Login, Logout, CreateAccount, AccessInfo, CreateCourse, EditAccount, EditInfo,\
-    AssignInstructorToCourse, AssignTAToCourse, ViewCourseAssignments
+    AssignInstructorToCourse, AssignTAToCourse, ViewCourseAssignments, CourseView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +33,5 @@ urlpatterns = [
     path('assign_instructor/', AssignInstructorToCourse.as_view(), name='AssignInstructor1'),
     path('view_course_assignments/', ViewCourseAssignments.as_view(), name='ViewCourseAssignments1'),
     path('edit_info/', EditInfo.as_view(), name='EditInfo1'),
+    url(r'^course/(?P<coursename>\d+)/$', CourseView.as_view(), name='Course1'),
 ]

@@ -14,8 +14,9 @@ class User(models.Model):
 
 
 class Course(models.Model):
-    course_department = models.CharField(max_length=6)
+    course_department = models.CharField(max_length=8)
     course_id = models.PositiveSmallIntegerField(default=0)
+    course_dept_id = models.CharField(max_length=9)
     num_lectures = models.PositiveSmallIntegerField(default=0)
     num_labs = models.PositiveSmallIntegerField(default=0)
     current_num_TA = models.PositiveSmallIntegerField(default=0)

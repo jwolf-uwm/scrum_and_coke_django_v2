@@ -169,6 +169,12 @@ class EditAccount(View):
         return render(request, 'main/edit_account.html')
 
 
+class CourseView(View):
+    def get(self, request, **kwargs):
+
+        coursename = self.kwargs["coursename"]
+        return render(request, 'main/course.html', {"coursename": coursename})
+
 # Edit Info
 class EditInfo(View):
 

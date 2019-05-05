@@ -37,7 +37,8 @@
             </tr>
             {% for course in courses %}
             <tr>
-                <td>{{ course.course_department }}{{ course.course_id }}</td>
+                <td><a href="{% url 'Course1' coursename=course.course_id%}">
+                    {{ course.course_department }}{{ course.course_id }}</a></td>
                 <td>{{ course.num_lectures }}</td>
                 <td>{{ course.num_labs }}</td>
                 <td>{{ course.current_num_TA }}</td>
