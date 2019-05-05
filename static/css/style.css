@@ -63,11 +63,20 @@ body {
 }
 
 .access_info tr:nth-child(even) {
-    background-color: #abaeb2;
+    background-color: lightgray;
 }
 
 .access_info tr:nth-child(odd) {
     background-color: #ffffff;
+}
+
+.access_info a {
+    color: #032863;
+    font-weight: bold;
+}
+
+.access_info a:hover {
+    color: #2481d8;
 }
 
 .heading {
