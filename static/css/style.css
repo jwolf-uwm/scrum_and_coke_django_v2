@@ -75,6 +75,11 @@ body {
     font-weight: bold;
 }
 
+.access_info a:visited {
+    color: #032863;
+    font-weight: bold;
+}
+
 .access_info a:hover {
     color: #2481d8;
 }
