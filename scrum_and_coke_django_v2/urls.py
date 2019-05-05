@@ -33,5 +33,5 @@ urlpatterns = [
     path('assign_instructor/', AssignInstructorToCourse.as_view(), name='AssignInstructor1'),
     path('view_course_assignments/', ViewCourseAssignments.as_view(), name='ViewCourseAssignments1'),
     path('edit_info/', EditInfo.as_view(), name='EditInfo1'),
-    url(r'^course/(?P<coursename>\d+)/$', CourseView.as_view(), name='Course1'),
+    url(r'^course/(?P<course_dept_id>.+?)/$', CourseView.as_view(), name='Course1'),
 ]

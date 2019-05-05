@@ -139,6 +139,22 @@ class AccessInfo(View):
                                                          "labs": labs})
 
 
+class CourseView(View):
+    def get(self, request, **kwargs):
+        course_dept_id = self.kwargs["course_dept_id"]
+
+        course = models.Course.objects.get(course_dept_id=course_dept_id)
+        labs = models.Lab.objects.filter(course=course)
+        lectures = models.Lecture.objects.filter(course=course)
+        ta_courses = models.TACourse.objects.filter(course=course)
+        tas = []
+        for ta_course in ta_courses:
+            tas.append(ta_course.TA)
+
+        return render(request, 'main/course.html', {"course_dept_id": course_dept_id, "labs": labs,
+                                                    "lectures": lectures, "tas": tas})
+
+
 # Edit Account
 class EditAccount(View):
     def get(self, request):
@@ -168,12 +184,6 @@ class EditAccount(View):
 
         return render(request, 'main/edit_account.html')
 
-
-class CourseView(View):
-    def get(self, request, **kwargs):
-
-        coursename = self.kwargs["coursename"]
-        return render(request, 'main/course.html', {"coursename": coursename})
 
 # Edit Info
 class EditInfo(View):
