@@ -331,9 +331,10 @@ class AssignInstructorToLecture(View):
     def post(self, request):
         email = request.POST["email"]
         course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
         course_department = request.POST["course_department"]
-        response = Commands.assign_ta_to_course(email, course_id, course_department)
-        if response == "TA Assigned!":
+        response = Commands.assign_instructor_to_lec(email, course_id, course_section, course_department)
+        if response == "Instructor assigned to lecture":
             messages.success(request, response)
         else:
             messages.error(request, response)
@@ -346,16 +347,18 @@ class AssignTAToLabLec(View):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
         account_type = request.session.get("type")
-        if not account_type == "supervisor":
+        if not account_type == "instructor":
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
         return render(request, 'main/assign_ta_lablec.html')
 
     def post(self, request):
+        ins = request.session.get("email")
         email = request.POST["email"]
         course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
         course_department = request.POST["course_department"]
-        response = Commands.assign_ta_to_course(email, course_id, course_department)
+        response = Commands.assign_ta_to_lablec(ins, email, course_id, course_section, course_department)
         if response == "TA Assigned!":
             messages.success(request, response)
         else:
