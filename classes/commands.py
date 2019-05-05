@@ -445,7 +445,7 @@ class Commands:
 
                 for ta_lab in models.Lab.objects.all():
                     if ta_lab.TA == tee_ayy.email:
-                        string_list = string_list + "Lab: " + ta_lab.section_id + "\n"
+                        string_list = string_list + "Lab: " + ta_lab.lab_section + "\n"
                 string_list = string_list + "\n"
 
         return string_list
