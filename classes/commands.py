@@ -462,7 +462,7 @@ class Commands:
         people = models.User.objects.filter(email=email)
 
         if len(people) != 1:
-            return "Such User does not exit"
+            return "Such User does not exist"
         person = people[0]
         if person.type == "administrator" or person.type == "supervisor":
             return "You cannot delete this account"
