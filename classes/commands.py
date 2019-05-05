@@ -467,11 +467,11 @@ class Commands:
         if person.type == "administrator" or person.type == "supervisor":
             return "You cannot delete this account"
         if person.type == "TA":
-            # Labs = models.Lab.objects.filter(email=person.email)
             models.Lab.objects.filter(TA=person.email).update(TA="no TA")
         if person.type == "instructor":
-            models.InstructorCourse.objects.filter()
             models.Lecture.objects.filter(instructor=person.email).update(instructor="no instructor")
+
         models.User.objects.filter(email=person.email).delete()
+
         return email+" has been deleted successfully"
 
