@@ -470,6 +470,8 @@ class Commands:
         if person.type == "TA":
             # Labs = models.Lab.objects.filter(email=person.email)
             models.Lab.objects.filter(TA=person.email).update(TA="no TA")
+        if person.type == "instructor":
+            return
         models.User.objects.filter(email=person.email).delete()
         return email+" has been deleted successfully"
 
