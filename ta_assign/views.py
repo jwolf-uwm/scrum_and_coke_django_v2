@@ -130,9 +130,13 @@ class AccessInfo(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        response = Commands.access_info()
-        messages.success(request, response)
-        return render(request, 'main/access_info.html')
+        users = models.User.objects.all()
+        courses = models.Course.objects.all()
+        lectures = models.Lecture.objects.all()
+        labs = models.Lab.objects.all()
+
+        return render(request, 'main/access_info.html', {"users": users, "courses": courses, "lectures": lectures,
+                                                         "labs": labs})
 
 
 # Edit Account

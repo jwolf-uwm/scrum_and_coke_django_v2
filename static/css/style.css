@@ -44,3 +44,33 @@ body {
 .font_help {
     font-family: "Trebuchet MS";
 }
+
+.access_info {
+    width: 95%;
+    margin: auto;
+}
+
+.access_info table {
+    width: 100%;
+    margin: auto;
+    border: 1px solid black;
+    border-spacing: 0px;
+    table-layout: fixed;
+}
+
+.access_info td {
+    text-align: center;
+    border: 1px solid black;
+}
+
+.access_info tr:nth-child(even) {
+    background-color: #abaeb2;
+}
+
+.access_info tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.heading {
+    font-weight: bold;
+}
