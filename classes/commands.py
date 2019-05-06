@@ -470,18 +470,24 @@ class Commands:
     @staticmethod
     def view_ta_assign():
         string_list = ""
-        tee_ayys = models.User.objects.filter(type="ta")
-        for tee_ayy in tee_ayys:
-            string_list = string_list + "TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + tee_ayy.phone + "\n"
+        tas = models.User.objects.filter(type="ta")
+        for ta in tas:
+            string_list = string_list + "TA: " + ta.name + " | " + ta.email + " | " + ta.phone + "\n"
 
             for ta_courses in models.TACourse.objects.all():
-                if ta_courses.TA.email == tee_ayy.email:
+                if ta_courses.TA.email == ta.email:
                     string_list = string_list + "\tCourse: " + ta_courses.course.course_dept_id + "\n"
 
-                for ta_lab in models.Lab.objects.all():
-                    if ta_lab.TA == tee_ayy.email:
-                        string_list = string_list + "\tLab: " + ta_lab.lab_section + "\n"
-                string_list = string_list + "\n"
+            for ta_lec in models.Lecture.objects.all():
+                if ta_lec.TA == ta.email:
+                    string_list = string_list + "\tLec-Section: " + ta_lec.lab_section + " Location: " +\
+                                    ta_lec.lab_location + " Time: " + str(ta_lec.lab_time) + "\n"
+
+            for ta_lab in models.Lab.objects.all():
+                if ta_lab.TA == ta.email:
+                    string_list = string_list + "\tLab-Section: " + ta_lab.lab_section + " Location: " +\
+                                ta_lab.lab_location + " Time: " + str(ta_lab.lab_time) + "\n"
+            string_list = string_list + "\n"
 
         return string_list
 
@@ -502,11 +508,11 @@ class Commands:
         if person.type == "administrator" or person.type == "supervisor":
             return "You cannot delete this account"
         if person.type == "TA":
-            # Labs = models.Lab.objects.filter(email=person.email)
             models.Lab.objects.filter(TA=person.email).update(TA="no TA")
         if person.type == "instructor":
-            models.InstructorCourse.objects.filter()
             models.Lecture.objects.filter(instructor=person.email).update(instructor="no instructor")
+
         models.User.objects.filter(email=person.email).delete()
+
         return email+" has been deleted successfully"
 
