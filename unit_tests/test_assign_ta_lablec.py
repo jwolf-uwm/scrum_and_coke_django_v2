@@ -1,87 +1,11 @@
 from django.test import TestCase
-from django.test.client import Client
-from django.contrib.messages import get_messages
 from ta_assign import models
-
+from classes.commands import Commands
 
 class AssignTaTests(TestCase):
 
     def setUp(self):
         return
-
-    def test_no_login_get(self):
-
-        client = Client()
-        response = client.get('/assign_ta_lablec/')
-        # this gets any messages
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        # this should be the first and only message, tagged error
-        self.assertEqual(all_messages[0].tags, "error")
-        self.assertEqual(all_messages[0].message, "Please login first.")
-        # since we returned a redirect, we can check the location
-        self.assertEqual(response.get('location'), '/login/')
-
-    def test_instructor_get(self):
-
-        client = Client()
-        session = client.session
-        session['email'] = 'inst@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.get('/assign_ta_lablec/')
-        # status code 200, we loaded the correct page
-        self.assertEqual(response.status_code, 200)
-        # since we returned a render, it has all the content of the page
-        # we'll just look for the header
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        # no error messages
-        self.assertEqual(len(all_messages), 0)
-
-    def test_ta_get(self):
-
-        client = Client()
-        session = client.session
-        session['email'] = 'ta@uwm.edu'
-        session['type'] = 'ta'
-        session.save()
-        response = client.get('/assign_ta/')
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        self.assertEqual(all_messages[0].tags, "error")
-        self.assertEqual(all_messages[0].message, "You do not have access to this page.")
-        self.assertEqual(response.get('location'), '/index/')
-
-    def test_admin_get(self):
-
-        client = Client()
-        session = client.session
-        session['email'] = 'admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-        response = client.get('/assign_ta_lablec/')
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        self.assertEqual(all_messages[0].tags, "error")
-        self.assertEqual(all_messages[0].message, "You do not have access to this page.")
-        self.assertEqual(response.get('location'), '/index/')
-
-    def test_sup_get(self):
-
-        client = Client()
-        # make a session, email and type are all you need
-        session = client.session
-        session['email'] = 'sup@uwm.edu'
-        session['type'] = 'supervisor'
-        # save the session
-        session.save()
-        response = client.get('/assign_ta_lablec/')
-        # status code 200, we loaded the correct page
-        self.assertEqual(response.status_code, 200)
-        # since we returned a render, it has all the content of the page
-        # we'll just look for the header
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        # no error messages
-        self.assertEqual(len(all_messages), 0)
 
     def test_ins_post_lec(self):
         ta1 = models.User()
@@ -116,16 +40,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                        'course_department': "COMPSCI", 'course_section': "401"}, follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "TA Assigned to Lecture!")
+        response = Commands.assign_ta_to_lablec(inst1.email, ta1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA Assigned to Lecture!")
 
     def test_super_post_lec(self):
         ta1 = models.User()
