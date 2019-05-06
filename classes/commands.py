@@ -380,9 +380,10 @@ class Commands:
     @staticmethod
     def view_course_assignments(instructor):
         string_list = ""
-        courses = models.Course.objects.filter(instructor=instructor)
+        ins = models.User.objects.get(email=instructor)
+        courses = models.InstructorCourse.objects.filter(instructor=ins)
         for course in courses:
-            string_list = string_list + course.course_id + " \n"
+            string_list = string_list + course.course.course_department+": "+ str(course.course.course_id) + " \n"
 
         return string_list
 
