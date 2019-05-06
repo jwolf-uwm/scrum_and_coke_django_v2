@@ -549,8 +549,11 @@ class Commands:
 
     # Read Public Contact Info Commands
     @staticmethod
-    def read_public(email):
-        return
+    # returns a list with all the users
+    # it's up to the view to format this nicely
+    def read_public():
+        users = models.User.objects.all()
+        return users
 
     # Delete Account
     @staticmethod
