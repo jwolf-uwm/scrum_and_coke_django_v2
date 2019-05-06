@@ -20,7 +20,7 @@ class TestEditLecLab(TestCase):
         lec1.lecture_time = datetime.time(12, 00)
         lec1.save()
 
-        lab1 = models.Lecture()
+        lab1 = models.Lab()
         lab1.course = course1
         lab1.lab_section = "801"
         lab1.lab_location = "Somewhere"
@@ -51,115 +51,114 @@ class TestEditLecLab(TestCase):
         self.assertEqual(lec1.lecture_location, "Somewhere")
         self.assertEqual(lec1.lecture_time, datetime.time(2, 8))
 
-##########################################################################################
     def test_edit_lecture_location_and_bad_time(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-
-        response = client.post('/edit_lec_lab/', data={'course_department': "COMPSCI", 'course_id': "361",
-                                                       'section': "lecture", 'section_id': "401",
-                                                       'location': "New Location", 'time': "New Time"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "Bad time format (HH:MM)")
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lecture", "401", "NEW LOCATION", "BAD"),
+                         "Bad time format (HH:MM)")
+        course = models.Course.objects.get(course_id="361")
+        lec1 = models.Lecture.objects.get(course=course, lecture_section="401")
+        self.assertEqual(lec1.lecture_location, "NEW LOCATION")
+        self.assertEqual(lec1.lecture_time, datetime.time(12, 0))
 
     def test_edit_lecture_location_and_more_bad_time(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-
-        response = client.post('/edit_lec_lab/', data={'course_department': "COMPSCI", 'course_id': "361",
-                                                       'section': "lecture", 'section_id': "401",
-                                                       'location': "New Location", 'time': "24:00"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "Bad time format (HH:MM)")
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lecture", "401", "NEW LOCATION", "24:00"),
+                         "Bad time format (HH:MM)")
+        course = models.Course.objects.get(course_id="361")
+        lec1 = models.Lecture.objects.get(course=course, lecture_section="401")
+        self.assertEqual(lec1.lecture_location, "NEW LOCATION")
+        self.assertEqual(lec1.lecture_time, datetime.time(12, 0))
 
     def test_edit_lecture_bad_dept(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-
-        response = client.post('/edit_lec_lab/', data={'course_department': "BAD DEPT", 'course_id': "361",
-                                                       'section': "lecture", 'section_id': "401",
-                                                       'location': "New Location", 'time': "24:00"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "That department is not offered")
+        self.assertEqual(Commands.edit_lec_lab("BAD DEPT", "361", "lecture", "401", "NEW LOCATION", "02:08"),
+                         "That department is not offered")
+        course = models.Course.objects.get(course_id="361")
+        lec1 = models.Lecture.objects.get(course=course, lecture_section="401")
+        self.assertEqual(lec1.lecture_location, "Somewhere")
+        self.assertEqual(lec1.lecture_time, datetime.time(12, 0))
 
     def test_edit_lecture_bad_course_id(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-
-        response = client.post('/edit_lec_lab/', data={'course_department': "COMPSCI", 'course_id': "BAD",
-                                                       'section': "lecture", 'section_id': "401",
-                                                       'location': "New Location", 'time': "24:00"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "Course ID must be a number")
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "BAD", "lecture", "401", "NEW LOCATION", "02:08"),
+                         "Course ID must be a number")
 
     def test_edit_lecture_course_dne(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-
-        response = client.post('/edit_lec_lab/', data={'course_department': "COMPSCI", 'course_id': "333",
-                                                       'section': "lecture", 'section_id': "401",
-                                                       'location': "New Location", 'time': "24:00"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "That course does not exist")
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "333", "lecture", "401", "NEW LOCATION", "02:08"),
+                         "That course does not exist")
 
     def test_edit_lecture_bad_section_type(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-
-        response = client.post('/edit_lec_lab/', data={'course_department': "COMPSCI", 'course_id': "361",
-                                                       'section': "BADNESS", 'section_id': "401",
-                                                       'location': "New Location", 'time': "24:00"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "Invalid section type")
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "badness", "401", "NEW LOCATION", "02:08"),
+                         "Invalid section type")
 
     def test_edit_lecture_section_dne(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
-
-        response = client.post('/edit_lec_lab/', data={'course_department': "COMPSCI", 'course_id': "361",
-                                                       'section': "lecture", 'section_id': "123",
-                                                       'location': "New Location", 'time': "24:00"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "That lecture does not exist")
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lecture", "411", "NEW LOCATION", "02:08"),
+                         "That lecture does not exist")
 
     def test_edit_lecture_bad_section_id(self):
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_admin@uwm.edu'
-        session['type'] = 'administrator'
-        session.save()
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lecture", "BAD", "NEW LOCATION", "02:08"),
+                         "Section ID must be a number")
 
-        response = client.post('/edit_lec_lab/', data={'course_department': "COMPSCI", 'course_id': "361",
-                                                       'section': "lecture", 'section_id': "BAD",
-                                                       'location': "New Location", 'time': "24:00"})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Lecture/Lab")
-        self.assertContains(response, "Section ID must be a number")
+    def test_edit_lab_location_and_time(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lab", "801", "NEW LOCATION", "02:08"),
+                         "Section has been edited successfully.")
+        course = models.Course.objects.get(course_id="361")
+        lab1 = models.Lab.objects.get(course=course, lab_section="801")
+        self.assertEqual(lab1.lab_location, "NEW LOCATION")
+        self.assertEqual(lab1.lab_time, datetime.time(2, 8))
+
+    def test_edit_lab_location(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lab", "801", "NEW LOCATION", ""),
+                         "Section has been edited successfully.")
+        course = models.Course.objects.get(course_id="361")
+        lab1 = models.Lab.objects.get(course=course, lab_section="801")
+        self.assertEqual(lab1.lab_location, "NEW LOCATION")
+        self.assertEqual(lab1.lab_time, datetime.time(12, 0))
+
+    def test_edit_lab_time(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lab", "801", "", "02:08"),
+                         "Section has been edited successfully.")
+        course = models.Course.objects.get(course_id="361")
+        lab1 = models.Lab.objects.get(course=course, lab_section="801")
+        self.assertEqual(lab1.lab_location, "Somewhere")
+        self.assertEqual(lab1.lab_time, datetime.time(2, 8))
+
+    def test_edit_lab_location_and_bad_time(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lab", "801", "NEW LOCATION", "BAD"),
+                         "Bad time format (HH:MM)")
+        course = models.Course.objects.get(course_id="361")
+        lab1 = models.Lab.objects.get(course=course, lab_section="801")
+        self.assertEqual(lab1.lab_location, "NEW LOCATION")
+        self.assertEqual(lab1.lab_time, datetime.time(12, 0))
+
+    def test_edit_lab_location_and_more_bad_time(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lab", "801", "NEW LOCATION", "24:00"),
+                         "Bad time format (HH:MM)")
+        course = models.Course.objects.get(course_id="361")
+        lab1 = models.Lab.objects.get(course=course, lab_section="801")
+        self.assertEqual(lab1.lab_location, "NEW LOCATION")
+        self.assertEqual(lab1.lab_time, datetime.time(12, 0))
+
+    def test_edit_lab_bad_dept(self):
+        self.assertEqual(Commands.edit_lec_lab("BAD DEPT", "361", "lab", "801", "NEW LOCATION", "02:08"),
+                         "That department is not offered")
+        course = models.Course.objects.get(course_id="361")
+        lab1 = models.Lab.objects.get(course=course, lab_section="801")
+        self.assertEqual(lab1.lab_location, "Somewhere")
+        self.assertEqual(lab1.lab_time, datetime.time(12, 0))
+
+    def test_edit_lab_bad_course_id(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "BAD", "lab", "801", "NEW LOCATION", "02:08"),
+                         "Course ID must be a number")
+
+    def test_edit_lab_course_dne(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "333", "lab", "801", "NEW LOCATION", "02:08"),
+                         "That course does not exist")
+
+    def test_edit_lab_bad_section_type(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "badness", "801", "NEW LOCATION", "02:08"),
+                         "Invalid section type")
+
+    def test_edit_lab_section_dne(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lab", "811", "NEW LOCATION", "02:08"),
+                         "That lab does not exist")
+
+    def test_edit_lab_bad_section_id(self):
+        self.assertEqual(Commands.edit_lec_lab("COMPSCI", "361", "lab", "BAD", "NEW LOCATION", "02:08"),
+                         "Section ID must be a number")
