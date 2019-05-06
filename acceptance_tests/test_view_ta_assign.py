@@ -135,7 +135,7 @@ class CreateAccessInfo(TestCase):
         course1 = models.TACourse()
         course1.course.course_dept_id_id = "CS101-401"
         course1.course.instructor = "instructor@uwm.edu"
-        course1.TA = "ta@uwm.edu"
+        course1.TA = ta1
         course1.save()
 
         client = Client()
@@ -165,7 +165,7 @@ class CreateAccessInfo(TestCase):
         course1 = models.TACourse()
         course1.course.course_dept_id = "CS101-401"
         course1.course.instructor = "instructor@uwm.edu"
-        course1.TA = "ta@uwm.edu"
+        course1.TA = ta1
         course1.save()
 
         client = Client()
@@ -210,13 +210,13 @@ class CreateAccessInfo(TestCase):
         course1 = models.TACourse()
         course1.course.course_dept_id = "CS101-401"
         course1.course.instructor = "inst1@uwm.edu"
-        course1.TA = "ta1@uwm.edu"
+        course1.TA = ta1
         course1.save()
 
         course2 = models.TACourse()
         course2.course.course_dept_id = "CS102-402"
         course2.course.instructor = "inst2@uwm.edu"
-        course2.TA = "ta2@uwm.edu"
+        course2.TA = ta2
         course2.save()
 
         client = Client()
