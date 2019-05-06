@@ -64,14 +64,8 @@ class AccessInfoTests(TestCase):
 
         response = client.get('/access_info/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        big_string = str(all_messages[0])
-        parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[0], "Administrator:")
-        self.assertEqual(parse_string[1], "DEFAULT | ta_assign_admin@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_string[2], "")
-        self.assertEqual(parse_string[3], "Supervisor:")
-        self.assertEqual(parse_string[4], "DEFAULT | ta_assign_super@uwm.edu | 000.000.0000")
+        self.assertContains(response, "Administrator")
+        self.assertContains(response, "ta_assign_admin@uwm.edu")
 
     def test_access_info_super(self):
 
@@ -83,14 +77,8 @@ class AccessInfoTests(TestCase):
 
         response = client.get('/access_info/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        big_string = str(all_messages[0])
-        parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[0], "Administrator:")
-        self.assertEqual(parse_string[1], "DEFAULT | ta_assign_admin@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_string[2], "")
-        self.assertEqual(parse_string[3], "Supervisor:")
-        self.assertEqual(parse_string[4], "DEFAULT | ta_assign_super@uwm.edu | 000.000.0000")
+        self.assertContains(response, "Supervisor")
+        self.assertContains(response, "ta_assign_super@uwm.edu")
 
     def test_access_info_instructor_no_class(self):
 
@@ -107,11 +95,8 @@ class AccessInfoTests(TestCase):
 
         response = client.get('/access_info/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        big_string = str(all_messages[0])
-        parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[6], "Instructors:")
-        self.assertEqual(parse_string[7], "DEFAULT | instructor@uwm.edu | 000.000.0000")
+        self.assertContains(response, "Instructors")
+        self.assertContains(response, "instructor@uwm.edu")
 
     def test_access_info_ta_no_class(self):
 
@@ -128,23 +113,26 @@ class AccessInfoTests(TestCase):
 
         response = client.get('/access_info/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        big_string = str(all_messages[0])
-        parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[8], "TAs:")
-        self.assertEqual(parse_string[9], "DEFAULT | ta@uwm.edu | 000.000.0000")
+        self.assertContains(response, "TAs")
+        self.assertContains(response, "ta@uwm.edu")
 
     def test_access_info_inst_one_course(self):
 
         inst1 = models.User()
         inst1.email = "instructor@uwm.edu"
         inst1.type = "instructor"
+        inst1.name = "Bob"
         inst1.save()
 
         course1 = models.Course()
-        course1.course_id = "CS101-401"
+        course1.course_dept_id = "COMPSCI100"
         course1.instructor = "instructor@uwm.edu"
         course1.save()
+
+        inst1_course1 = models.InstructorCourse()
+        inst1_course1.instructor = inst1
+        inst1_course1.course = course1
+        inst1_course1.save()
 
         client = Client()
         session = client.session
@@ -154,10 +142,10 @@ class AccessInfoTests(TestCase):
 
         response = client.get('/access_info/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        big_string = str(all_messages[0])
-        parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[8], "\tCourse: CS101-401")
+        response = client.get('/course/COMPSCI100/')
+        self.assertContains(response, "Course: COMPSCI100")
+        self.assertContains(response, "Bob")
+
 
     def test_access_info_ta_one_course(self):
 
