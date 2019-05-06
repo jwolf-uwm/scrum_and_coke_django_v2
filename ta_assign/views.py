@@ -393,7 +393,7 @@ class AssignTAToLabLec(View):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
         account_type = request.session.get("type")
-        if not account_type == "instructor" or not account_type == "supervisor":
+        if not account_type == "instructor" and not account_type == "supervisor":
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
         return render(request, 'main/assign_ta_lablec.html')

@@ -4,7 +4,7 @@ from django.contrib.messages import get_messages
 from ta_assign import models
 
 
-class AssignInstructorTests(TestCase):
+class AssignInstructorLecTests(TestCase):
 
     def setUp(self):
         return
@@ -110,6 +110,53 @@ class AssignInstructorTests(TestCase):
         session.save()
         response = client.post('/assign_instructor_lec/', data={'email': "instructor@uwm.edu", 'course_id': "301",
                                             'course_department': "COMPSCI", 'course_section': "401"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Assign Instructor To Lecture")
+        self.assertContains(response, "Instructor assigned to lecture")
+
+    def test_valid_double(self):
+        inst1 = models.User()
+        inst1.email = "instructor@uwm.edu"
+        inst1.type = "instructor"
+        inst1.save()
+
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 2
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+
+        inscourse = models.InstructorCourse()
+        inscourse.instructor = inst1
+        inscourse.course = course
+        inscourse.save()
+
+        lec = models.Lecture()
+        lec.course = course
+        lec.lecture_section = "401"
+        lec.save()
+
+        lec2 = models.Lecture()
+        lec2.course = course
+        lec2.lecture_section = "402"
+        lec2.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post('/assign_instructor_lec/', data={'email': "instructor@uwm.edu", 'course_id': "301",
+                                                                'course_department': "COMPSCI",
+                                                                'course_section': "401"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Assign Instructor To Lecture")
+        self.assertContains(response, "Instructor assigned to lecture")
+        response = client.post('/assign_instructor_lec/', data={'email': "instructor@uwm.edu", 'course_id': "301",
+                                                                'course_department': "COMPSCI",
+                                                                'course_section': "402"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor To Lecture")
         self.assertContains(response, "Instructor assigned to lecture")
@@ -344,3 +391,80 @@ class AssignInstructorTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Assign Instructor To Lecture")
         self.assertContains(response, "no such instructor")
+
+    def test_not_assigned_course(self):
+        inst1 = models.User()
+        inst1.email = "instructor@uwm.edu"
+        inst1.type = "instructor"
+        inst1.save()
+
+        inst2 = models.User()
+        inst2.email = "instructor2@uwm.edu"
+        inst2.type = "instructor"
+        inst2.save()
+
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+
+        inscourse = models.InstructorCourse()
+        inscourse.instructor = inst1
+        inscourse.course = course
+        inscourse.save()
+
+        lec = models.Lecture()
+        lec.course = course
+        lec.lecture_section = "401"
+        lec.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post('/assign_instructor_lec/', data={'email': "instructor2@uwm.edu", 'course_id': "301",
+                                                                'course_department': "COMPSCI",
+                                                                'course_section': "401"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Assign Instructor To Lecture")
+        self.assertContains(response, "Instructor not assigned to this course!")
+
+    def test_invalid_section(self):
+        inst1 = models.User()
+        inst1.email = "instructor@uwm.edu"
+        inst1.type = "instructor"
+        inst1.save()
+
+        course = models.Course()
+        course.num_labs = 2
+        course.current_num_TA = 0
+        course.num_lectures = 1
+        course.course_id = "301"
+        course.course_department = "COMPSCI"
+        course.save()
+
+        inscourse = models.InstructorCourse()
+        inscourse.instructor = inst1
+        inscourse.course = course
+        inscourse.save()
+
+        lec = models.Lecture()
+        lec.course = course
+        lec.lecture_section = "401"
+        lec.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post('/assign_instructor_lec/', data={'email': "instructor@uwm.edu", 'course_id': "301",
+                                                                'course_department': "COMPSCI",
+                                                                'course_section': "402"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Assign Instructor To Lecture")
+        self.assertContains(response, "Lecture section does not exist")
