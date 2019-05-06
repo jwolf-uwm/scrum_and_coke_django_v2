@@ -31,8 +31,7 @@
             </tr>
             {% for lecture in lectures %}
             <tr>
-                <td>{{ lecture.course.course_department}}{{ lecture.course.course_id }}-
-                    {{ lecture.lecture_section }}</td>
+                <td>{{ lecture.course.course_department}}{{ lecture.course.course_id }}-{{ lecture.lecture_section }}</td>
                 <td>{{ lecture.instructor }}</td>
                 <td>{{ lecture.TA }}</td>
                 <td>{{ lecture.lecture_location }}</td>
