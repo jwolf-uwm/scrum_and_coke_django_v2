@@ -370,9 +370,8 @@ class AssignInstructorToCourse(View):
             messages.error(request, response)
         return render(request, 'main/assign_instructor.html')
 
-    # Assign TA
 
-
+# Assign TA
 class AssignTAToCourse(View):
     def get(self, request):
         if not request.session.get("email"):
@@ -444,9 +443,8 @@ class AssignTAToLabLec(View):
             messages.error(request, response)
         return render(request, 'main/assign_ta_lablec.html')
 
+
 # View course assignments
-
-
 class ViewCourseAssignments(View):
 
     def get(self, request):
@@ -465,9 +463,8 @@ class ViewCourseAssignments(View):
         messages.success(request, response)
         return render(request, 'main/view_course_assignments.html')
 
+
 # View TA Assign
-
-
 class ViewTAAssign(View):
 
     @staticmethod
@@ -530,3 +527,7 @@ class DeleteAccount(View):
         return redirect("Delete1")
 
 
+# Read Public Contact Info
+class ContactInfo(View):
+    def get(self, request):
+        return render(request,'main/contact_info.html')
