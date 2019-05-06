@@ -136,6 +136,61 @@ class ContactInfoTests(TestCase):
 
         response = client.get('/contact_info/')
         self.assertEqual(response.status_code, 200)
-
+        self.assertContains(response, "Instructors")
+        self.assertContains(response, "inst1@uwm.edu")
         self.assertContains(response, "TAs")
         self.assertContains(response, "ta1@uwm.edu")
+
+    def test_contact_info_find_name(self):
+
+        inst1 = models.User()
+        inst1.email = "inst1@uwm.edu"
+        inst1.type = "instructor"
+        inst1.name = "Bob"
+        inst1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'inst@uwm.edu'
+        session['type'] = 'instructor'
+        session.save()
+
+        response = client.get('/contact_info/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Bob")
+
+    def test_contact_info_find_phone(self):
+
+        inst1 = models.User()
+        inst1.email = "inst1@uwm.edu"
+        inst1.type = "instructor"
+        inst1.phone = "414.414.4141"
+        inst1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'inst@uwm.edu'
+        session['type'] = 'instructor'
+        session.save()
+
+        response = client.get('/contact_info/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "414.414.4141")
+
+    def test_contact_info_find_address(self):
+
+        inst1 = models.User()
+        inst1.email = "inst1@uwm.edu"
+        inst1.type = "instructor"
+        inst1.address = "1234 5th St. Somewhere, WI 55555"
+        inst1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'inst@uwm.edu'
+        session['type'] = 'instructor'
+        session.save()
+
+        response = client.get('/contact_info/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "1234 5th St. Somewhere, WI 55555")
