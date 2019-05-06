@@ -664,6 +664,11 @@ class AssignTaTests(TestCase):
         ad1.type = "administrator"
         ad1.save()
 
+        sup1 = models.User()
+        sup1.email = "sup@uwm.edu"
+        sup1.type = "supervisor"
+        sup1.save()
+
         ta1 = models.User()
         ta1.email = "ta@uwm.edu"
         ta1.type = "ta"
@@ -674,19 +679,18 @@ class AssignTaTests(TestCase):
         inst1.type = "instructor"
         inst1.save()
 
-        sup1 = models.User()
-        sup1.email = "ta_assign_super@uwm.edu"
-        sup1.type = "supervisor"
-        sup1.save()
-
         course = models.Course()
         course.num_labs = 0
-        course.current_num_TA = 0
+        course.current_num_TA = 1
         course.num_lectures = 1
-        course.instructor = "DEFAULT"
         course.course_id = "301"
         course.course_department = "COMPSCI"
         course.save()
+
+        inscourse = models.InstructorCourse()
+        inscourse.instructor = inst1
+        inscourse.course = course
+        inscourse.save()
 
         tacourse = models.TACourse()
         tacourse.TA = ta1
@@ -697,11 +701,10 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-
         client = Client()
         session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'instructor@uwm.edu'
+        session['type'] = 'instructor'
         session.save()
         response = client.post('/assign_ta_lablec/', data={'email': "admin@uwm.edu", 'course_id': "301",
                                                            'course_department': "COMPSCI", 'course_section': "401"},
@@ -726,19 +729,18 @@ class AssignTaTests(TestCase):
         inst1.type = "instructor"
         inst1.save()
 
-        sup1 = models.User()
-        sup1.email = "ta_assign_super@uwm.edu"
-        sup1.type = "supervisor"
-        sup1.save()
-
         course = models.Course()
         course.num_labs = 0
-        course.current_num_TA = 0
+        course.current_num_TA = 1
         course.num_lectures = 1
-        course.instructor = "DEFAULT"
         course.course_id = "301"
         course.course_department = "COMPSCI"
         course.save()
+
+        inscourse = models.InstructorCourse()
+        inscourse.instructor = inst1
+        inscourse.course = course
+        inscourse.save()
 
         tacourse = models.TACourse()
         tacourse.TA = ta1
@@ -749,11 +751,10 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-
         client = Client()
         session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'instructor@uwm.edu'
+        session['type'] = 'instructor'
         session.save()
         response = client.post('/assign_ta_lablec/', data={'email': "sup@uwm.edu", 'course_id': "301",
                                                            'course_department': "COMPSCI", 'course_section': "401"},
