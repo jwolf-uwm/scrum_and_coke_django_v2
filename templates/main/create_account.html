@@ -4,19 +4,31 @@
     <h1>Create Account</h1>
     <form method="POST" id="create_account_form">
         {% csrf_token %}
-        <label for="email">Email address:</label>
-        <input type="text" id="email" name="email">
-        <br><br>
-        <label for="password">Password:</label>
-        <input type="text" id="password" name="password">
-        <br><br>
-        <label for="type">Account Type:</label>
-        <select name="type" form="create_account_form">
-            <option value="instructor">Instructor</option>
-            <option value="ta">TA</option>
-        </select>
-        <br><br>
-        <input type="submit">
+        <table>
+        <tr>
+            <td><label for="email">Email address:</label></td>
+            <td><input type="text" id="email" name="email"></td>
+        </tr>
+        <tr>
+            <td><label for="password">Password:</label></td>
+            <td><input type="text" id="password" name="password"></td>
+        </tr>
+        <tr>
+            <td><label for="type">Account Type:</label></td>
+            <td><select name="type" id ="type" form="create_account_form">
+                    <option value="instructor">Instructor</option>
+                    <option value="ta">TA</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+             <input type="submit">
+            </td>
+        </tr>
+        </table>
     </form>
 
     {% for message in messages %}

@@ -1,30 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Course: {{ course_dept_id }}</h1>
+    <h1>TA: {{ ta_name }}</h1>
     <div class="access_info">
-        <h2>Instructors</h2>
+
+    <h2>Courses</h2>
         <table>
             <tr class="heading">
-                <td>Name</td>
-                <td>Email</td>
+                <td>Course ID</td>
+                <td>Number of Lectures</td>
+                <td>Number of Labs</td>
+                <td>TAs Assigned</td>
             </tr>
-            {% for instructor in instructors %}
+            {% for course in courses %}
             <tr>
-                <td>{{ instructor.name }}</td>
-                <td>{{ instructor.email }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <h2>TAs</h2>
-        <table>
-            <tr class="heading">
-                <td>Name</td>
-                <td>Email</td>
-            </tr>
-            {% for ta in tas %}
-            <tr>
-                <td>{{ ta.name }}</td>
-                <td>{{ ta.email }}</td>
+                <td>{{ course.course_department }}{{ course.course_id }}</td>
+                <td>{{ course.num_lectures }}</td>
+                <td>{{ course.num_labs }}</td>
+                <td>{{ course.current_num_TA }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -48,8 +40,7 @@
             </tr>
             {% endfor %}
         </table>
-
-    <h2>Labs</h2>
+        <h2>Labs</h2>
         <table>
             <tr class="heading">
                 <td>Course-Section ID</td>
@@ -59,7 +50,8 @@
             </tr>
             {% for lab in labs %}
             <tr>
-                <td>{{ lab.course.course_department}}{{ lab.course.course_id }}-{{ lab.lab_section }}</td>
+                <td>{{ lab.course.course_department}}{{ lab.course.course_id }}-
+                    {{ lab.lab_section }}</td>
                 <td>{{ lab.TA }}</td>
                 <td>{{ lab.lab_location }}</td>
                 <td>{{ lab.lab_time }}</td>

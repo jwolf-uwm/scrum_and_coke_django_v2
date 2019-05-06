@@ -62,7 +62,7 @@ body {
 }
 
 .dropdown-content a:hover {
-  background-color: #ddd;
+  background-color: #b6e9f9;
 }
 
 .dropdown:hover .dropdown-content {
@@ -84,28 +84,41 @@ body {
 }
 
 .access_info td {
-    text-align: center;
     border: 1px solid black;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: left;
 }
 
 .access_info tr:nth-child(even) {
-    background-color: lightgray;
+    background-color: #b1b4b5;
 }
 
 .access_info tr:nth-child(odd) {
     background-color: #ffffff;
 }
 
+td.spoiler  {
+    color: black;
+    background-color: black;
+}
+
+td.spoiler:hover {
+    color: white;
+}
+
 .access_info a {
-    color: #032863;
+    color: #082493;
     font-weight: bold;
 }
 
 .access_info a:visited {
-    color: #032863;
+    color: #082493;
     font-weight: bold;
+}
+
+.access_info a:hover {
+    color: #3b60ef;
 }
 
 .heading {

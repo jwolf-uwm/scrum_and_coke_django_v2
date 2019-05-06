@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Instructor: {{ instructor_name }}</h1>
+    <div class="access_info">
+
+    <h2>Courses</h2>
+        <table>
+            <tr class="heading">
+                <td>Course ID</td>
+                <td>Number of Lectures</td>
+                <td>Number of Labs</td>
+                <td>TAs Assigned</td>
+            </tr>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.course_department }}{{ course.course_id }}</td>
+                <td>{{ course.num_lectures }}</td>
+                <td>{{ course.num_labs }}</td>
+                <td>{{ course.current_num_TA }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h2>Lectures</h2>
+        <table>
+            <tr class="heading">
+                <td>Course-Section ID</td>
+                <td>Instructor</td>
+                <td>TA</td>
+                <td>Location</td>
+                <td>Time</td>
+            </tr>
+            {% for lecture in lectures %}
+            <tr>
+                <td>{{ lecture.course.course_department}}{{ lecture.course.course_id }}-
+                    {{ lecture.lecture_section }}</td>
+                <td>{{ lecture.instructor }}</td>
+                <td>{{ lecture.TA }}</td>
+                <td>{{ lecture.lecture_location }}</td>
+                <td>{{ lecture.lecture_time }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}
