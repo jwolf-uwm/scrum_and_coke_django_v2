@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h1>Access Info</h1>
+    <h1>Contact Info</h1>
 
     <div class="access_info">
 
@@ -47,7 +47,7 @@
             </tr>
             {% for instructor in instructors %}
             <tr>
-                <td><{{ instructor.name }}</td>
+                <td>{{ instructor.name }}</td>
                 <td>{{ instructor.email }}</td>
                 <td>{{ instructor.phone }}</td>
                 <td>{{ instructor.address }}</td>

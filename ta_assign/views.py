@@ -529,5 +529,23 @@ class DeleteAccount(View):
 
 # Read Public Contact Info
 class ContactInfo(View):
-    def get(self, request):
-        return render(request,'main/contact_info.html')
+
+    @staticmethod
+    def get(request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "instructor" and not account_type == "ta":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        admin = models.User.objects.get(type="administrator")
+        supervisor = models.User.objects.get(type="supervisor")
+        instructors = models.User.objects.filter(type="instructor")
+        tas = models.User.objects.filter(type="ta")
+
+        return render(request, 'main/contact_info.html', {"admin": admin, "super": supervisor,
+                                                          "instructors": instructors, "tas": tas})
