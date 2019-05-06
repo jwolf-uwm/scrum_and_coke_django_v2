@@ -31,8 +31,7 @@
             </tr>
             {% for lecture in lectures %}
             <tr>
-                <td>{{ lecture.course.course_department}}{{ lecture.course.course_id }}-
-                    {{ lecture.lecture_section }}</td>
+                <td>{{ lecture.course.course_department}}{{ lecture.course.course_id }}-{{ lecture.lecture_section }}</td>
                 <td>{{ lecture.instructor }}</td>
                 <td>{{ lecture.TA }}</td>
                 <td>{{ lecture.lecture_location }}</td>
@@ -50,8 +49,7 @@
             </tr>
             {% for lab in labs %}
             <tr>
-                <td>{{ lab.course.course_department}}{{ lab.course.course_id }}-
-                    {{ lab.lab_section }}</td>
+                <td>{{ lab.course.course_department}}{{ lab.course.course_id }}-{{ lab.lab_section }}</td>
                 <td>{{ lab.TA }}</td>
                 <td>{{ lab.lab_location }}</td>
                 <td>{{ lab.lab_time }}</td>
