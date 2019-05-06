@@ -425,7 +425,7 @@ class Commands:
             if check_lec is not None:
                 if check_course.num_labs is not 0:
                     return "TA cannot be assigned to this lecture(labs exist)!"
-                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
+                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(TA=email)
                 return "TA Assigned to Lecture!"
 
             try:
@@ -461,7 +461,7 @@ class Commands:
             if check_lec is not None:
                 if check_course.num_labs is not 0:
                     return "TA cannot be assigned to this lecture(labs exist)!"
-                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
+                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(TA=email)
                 return "TA Assigned to Lecture!"
             else:
                 try:
