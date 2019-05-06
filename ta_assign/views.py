@@ -450,9 +450,26 @@ class ViewTAAssign(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        response = Commands.view_ta_assign()
-        messages.success(request, response)
-        return render(request, 'main/view_ta_assign.html')
+        tas = models.User.objects.filter(type="ta")
+        courses = []
+        lecs = []
+        labs = []
+        for ta in tas:
+
+            for ta_courses in models.TACourse.objects.all():
+                if ta_courses.TA.email == ta.email:
+                    courses.append(ta_courses)
+
+            for ta_lec in models.Lecture.objects.all():
+                if ta_lec.TA == ta.email:
+                    lecs.append(ta_lec)
+
+            for ta_lab in models.Lab.objects.all():
+                if ta_lab.TA == ta.email:
+                    labs.append(ta_lab)
+
+        return render(request, 'main/view_ta_assign.html', {"tas": tas, "courses": courses,
+                                                                 "lecs": lecs, "labs": labs})
 
 
 class DeleteAccount(View):
