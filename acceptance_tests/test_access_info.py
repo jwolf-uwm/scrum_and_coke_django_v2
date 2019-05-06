@@ -116,7 +116,7 @@ class AccessInfoTests(TestCase):
         self.assertContains(response, "TAs")
         self.assertContains(response, "ta@uwm.edu")
 
-    def test_access_info_inst_one_course(self):
+    def test_access_info_inst_course_coursepage(self):
 
         inst1 = models.User()
         inst1.email = "instructor@uwm.edu"
@@ -146,6 +146,77 @@ class AccessInfoTests(TestCase):
         self.assertContains(response, "Course: COMPSCI100")
         self.assertContains(response, "Bob")
 
+    def test_access_info_inst_course_instpage(self):
+
+        inst1 = models.User()
+        inst1.email = "instructor@uwm.edu"
+        inst1.type = "instructor"
+        inst1.name = "Bob"
+        inst1.save()
+
+        course1 = models.Course()
+        course1.course_department = "COMPSCI"
+        course1.course_id = "100"
+        course1.course_dept_id = "COMPSCI100"
+        course1.instructor = "instructor@uwm.edu"
+        course1.save()
+
+        inst1_course1 = models.InstructorCourse()
+        inst1_course1.instructor = inst1
+        inst1_course1.course = course1
+        inst1_course1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.get('/access_info/')
+        self.assertEqual(response.status_code, 200)
+        response = client.get('/instructor/instructor@uwm.edu/')
+        self.assertContains(response, "Instructor: Bob")
+        self.assertContains(response, "COMPSCI100")
+
+    def test_access_info_inst_course_lecture_coursepage(self):
+
+        inst1 = models.User()
+        inst1.email = "instructor@uwm.edu"
+        inst1.type = "instructor"
+        inst1.name = "Bob"
+        inst1.save()
+
+        course1 = models.Course()
+        course1.course_department = "COMPSCI"
+        course1.course_id = "100"
+        course1.course_dept_id = "COMPSCI100"
+        course1.instructor = "instructor@uwm.edu"
+        course1.num_lectures = 1
+        course1.current_num_lectures = 1
+        course1.save()
+
+        inst1_course1 = models.InstructorCourse()
+        inst1_course1.instructor = inst1
+        inst1_course1.course = course1
+        inst1_course1.save()
+
+        lecture1 = models.Lecture()
+        lecture1.instructor = "instructor@uwm.edu"
+        lecture1.course = course1
+        lecture1.lecture_section = "401"
+        lecture1.save()
+
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+
+        response = client.get('/access_info/')
+        self.assertEqual(response.status_code, 200)
+        response = client.get('/course/COMPSCI100/')
+        self.assertContains(response, "Lectures")
+        self.assertContains(response, "COMPSCI100-401")
 
     def test_access_info_ta_one_course(self):
 
