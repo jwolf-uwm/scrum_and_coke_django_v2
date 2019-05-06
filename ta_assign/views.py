@@ -311,6 +311,39 @@ class EditInfo(View):
 
         return redirect("EditInfo1")
 
+
+# Edit Lecture/Lab
+class EditLecLab(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        return render(request, 'main/edit_lec_lab.html')
+
+    def post(self, request):
+        department = request.POST["course_department"]
+        course_id = request.POST["course_id"]
+        section_type = request.POST["section"]
+        section_id = request.POST["section_id"]
+        location = request.POST["location"]
+        time = request.POST["time"]
+
+        response = Commands.edit_lec_lab(department, course_id, section_type, section_id, location, time)
+
+        if response == "Section has been edited successfully.":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return render(request, 'main/edit_lec_lab.html')
+
 # Assign Instructor
 
 
@@ -450,9 +483,26 @@ class ViewTAAssign(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        response = Commands.view_ta_assign()
-        messages.success(request, response)
-        return render(request, 'main/view_ta_assign.html')
+        tas = models.User.objects.filter(type="ta")
+        courses = []
+        lecs = []
+        labs = []
+        for ta in tas:
+
+            for ta_courses in models.TACourse.objects.all():
+                if ta_courses.TA.email == ta.email:
+                    courses.append(ta_courses)
+
+            for ta_lec in models.Lecture.objects.all():
+                if ta_lec.TA == ta.email:
+                    lecs.append(ta_lec)
+
+            for ta_lab in models.Lab.objects.all():
+                if ta_lab.TA == ta.email:
+                    labs.append(ta_lab)
+
+        return render(request, 'main/view_ta_assign.html', {"tas": tas, "courses": courses,
+                                                                 "lecs": lecs, "labs": labs})
 
 
 class DeleteAccount(View):

@@ -1,4 +1,5 @@
 from ta_assign import models
+import time
 
 
 class Commands:
@@ -189,6 +190,56 @@ class Commands:
             return "User has been updated successfully"
         else:
             return "The entered data field does not exist"
+
+    @staticmethod
+    def edit_lec_lab(department, course_id, section_type, section_id, location, sectime):
+        good_dept = ["COMPSCI", "ELECENG", "PHYSICS", "MATH", "BIOMED", "CIVIL", "INDENG", "MATENG",
+                     "MECHENG", "STRUCENG", "WEBDEV"]
+        if department not in good_dept:
+            return "That department is not offered"
+        if not course_id.isdigit():
+            return "Course ID must be a number"
+        if int(course_id) < 101 or int(course_id) > 999:
+            return "Course ID must be 3 digits long and between 101 and 999"
+        if not section_id.isdigit():
+            return "Section ID must be a number"
+        if int(section_id) < 100 or int(section_id) > 999:
+            return "Section ID must be 3 digits long and between 100 and 999"
+        try:
+            course = models.Course.objects.get(course_department=department, course_id=course_id)
+        except models.Course.DoesNotExist:
+            return "That course does not exist"
+        if section_type == "lecture":
+            try:
+                models.Lecture.objects.get(course=course, lecture_section=section_id)
+            except models.Lecture.DoesNotExist:
+                return "That lecture does not exist"
+            lecture = models.Lecture.objects.filter(course=course, lecture_section=section_id)
+            if location != "":
+                lecture.update(lecture_location=location)
+            if sectime != "":
+                try:
+                    time.strptime(sectime, '%H:%M')
+                except ValueError:
+                    return "Bad time format (HH:MM)"
+                lecture.update(lecture_time=sectime)
+        elif section_type == "lab":
+            try:
+                models.Lab.objects.get(course=course, lab_section=section_id)
+            except models.Lab.DoesNotExist:
+                return "That lab does not exist"
+            lab = models.Lab.objects.filter(course=course, lab_section=section_id)
+            if location != "":
+                lab.update(lab_location=location)
+            if sectime != "":
+                try:
+                    time.strptime(sectime, '%H:%M')
+                except ValueError:
+                    return "Bad time format (HH:MM)"
+                lab.update(lab_time=sectime)
+        else:
+            return "Invalid section type"
+        return "Section has been edited successfully."
 
     # Edit Info Commands
     @staticmethod

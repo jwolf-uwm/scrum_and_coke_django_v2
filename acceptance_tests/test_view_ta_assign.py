@@ -4,7 +4,7 @@ from django.contrib.messages import get_messages
 from ta_assign import models
 
 
-class CreateAccessInfo(TestCase):
+class TestViewTAAssign(TestCase):
 
     def setUp(self):
         ad1 = models.User()
