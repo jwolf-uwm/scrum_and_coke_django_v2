@@ -87,7 +87,7 @@ body {
     border: 1px solid black;
     padding-left: 20px;
     padding-right: 20px;
-    text-align: left;
+    text-align: center;
 }
 
 .access_info tr:nth-child(even) {
