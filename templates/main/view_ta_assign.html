@@ -3,8 +3,74 @@
 
     <h1>View TA Assignments</h1>
 
-    {% for message in messages %}
-        <pre><p class="font_help">{{ message }}</p></pre>
-    {% endfor %}
+    <div class="access_info">
+
+        <h2>TA Courses:</h2>
+        <table>
+            <tr class="heading">
+                <td>TA</td>
+                <td>Course</td>
+            </tr>
+            {% for cour in courses %}
+            <tr>
+                <td><a href="{% url 'TA1' ta_email=cour.TA.email %}">{{ cour.TA.email }}</a></td>
+                <td>{{ cour.course.course_dept_id }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>TA Lectures:</h2>
+        <table>
+            <tr class="heading">
+                <td>TA</td>
+                <td>Lecture</td>
+                <td>Location</td>
+                <td>Time</td>
+            </tr>
+            {% for lec in lecs %}
+            <tr>
+                <td><a href="{% url 'TA1' ta_email=lec.TA %}">{{ lec.TA }}</a></td>
+                <td>{{ lec.course.course_dept_id}}-{{ lec.lecture_section }}</td>
+                <td>{{ lec.lecture_location }}</td>
+                <td>{{ lec.lecture_time }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>TA Labs:</h2>
+        <table>
+            <tr class="heading">
+                <td>TA</td>
+                <td>Lab</td>
+                <td>Location</td>
+                <td>Time</td>
+            </tr>
+            {% for lab in labs %}
+            <tr>
+                <td><a href="{% url 'TA1' ta_email=lab.TA %}">{{ lab.TA }}</a></td>
+                <td>{{ lab.course.course_dept_id }}-{{ lab.lab_section }}</td>
+                <td>{{ lab.lab_location }}</td>
+                <td>{{ lab.lab_time }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>TA's:</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Phone</td>
+            </tr>
+            {% for ta in tas %}
+            <tr>
+                <td><a href="{% url 'TA1' ta_email=ta.email %}">{{ ta.name }}</a></td>
+                <td>{{ ta.email }}</td>
+                <td>{{ ta.phone }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
 
 {% endblock content %}
