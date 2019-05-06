@@ -74,16 +74,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                             'course_department': "COMPSCI", 'course_section': "401"}, follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA")
-        self.assertContains(response, "TA Assigned to Lecture!")
+        response = Commands.assign_ta_to_lablec(sup1.email, ta1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA Assigned to Lecture!")
 
     def test_ins_post_lab(self):
         ta1 = models.User()
@@ -118,16 +111,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lab_section = "801"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                        'course_department': "COMPSCI", 'course_section': "801"}, follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "TA Assigned to Lab!")
+        response = Commands.assign_ta_to_lablec(inst1.email, ta1.email, course.course_id, lec.lab_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA Assigned to Lab!")
 
     def test_super_post_lab(self):
         ta1 = models.User()
@@ -159,16 +145,9 @@ class AssignTaTests(TestCase):
         lec.lab_section = "801"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                             'course_department': "COMPSCI", 'course_section': "801"}, follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA")
-        self.assertContains(response, "TA Assigned to Lab!")
+        response = Commands.assign_ta_to_lablec(sup1.email, ta1.email, course.course_id, lec.lab_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA Assigned to Lab!")
 
     def test_invalid_ta_ins(self):
         ta1 = models.User()
@@ -203,17 +182,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lab_section = "801"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta3@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "801"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(inst1.email, "ta1@uwm.edu", course.course_id, lec.lab_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_invalid_ta_sup(self):
         ta1 = models.User()
@@ -245,17 +216,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta3@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(sup1.email, "ta3@uwm.edu", course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_invalid_course_ins(self):
         ta1 = models.User()
@@ -290,17 +253,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lab_section = "801"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "302",
-                                                           'course_department': "COMPSCI", 'course_section': "801"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such course")
+        response = Commands.assign_ta_to_lablec(inst1.email, ta1.email, "302", lec.lab_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such course")
 
     def test_invalid_course_sup(self):
         ta1 = models.User()
@@ -332,17 +287,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "302",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such course")
+        response = Commands.assign_ta_to_lablec(sup1.email, ta1.email, "302", lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such course")
 
     def test_invalid_course_department_sup(self):
         ta1 = models.User()
@@ -374,17 +321,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                           'course_department': "PHYSICS", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such course")
+        response = Commands.assign_ta_to_lablec(sup1.email, ta1.email, course.course_id, lec.lecture_section,
+                                                "PHYSICS")
+        self.assertEqual(response, "no such course")
 
     def test_invalid_course_department_ins(self):
         ta1 = models.User()
@@ -419,17 +358,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lab_section = "801"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                           'course_department': "PHYSICS", 'course_section': "801"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such course")
+        response = Commands.assign_ta_to_lablec(inst1.email, ta1.email, course.course_id, lec.lab_section,
+                                                "PHYSICS")
+        self.assertEqual(response, "no such course")
 
     def test_assign_improper_ins_ins(self):
         ta1 = models.User()
@@ -464,17 +395,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lab_section = "801"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "instructor@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "801"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(inst1.email, inst1.email, course.course_id, lec.lab_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_improper_ins_sup(self):
         ta1 = models.User()
@@ -511,17 +434,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "instructor@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(sup1.email, inst1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_assign_improper_admin_sup(self):
         ad1 = models.User()
@@ -563,23 +478,20 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ad1@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(sup1.email, ad1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_improper_admin_ins(self):
         ad1 = models.User()
         ad1.email = "admin@uwm.edu"
         ad1.type = "administrator"
         ad1.save()
+
+        sup1 = models.User()
+        sup1.email = "sup@uwm.edu"
+        sup1.type = "supervisor"
+        sup1.save()
 
         ta1 = models.User()
         ta1.email = "ta@uwm.edu"
@@ -591,19 +503,18 @@ class AssignTaTests(TestCase):
         inst1.type = "instructor"
         inst1.save()
 
-        sup1 = models.User()
-        sup1.email = "ta_assign_super@uwm.edu"
-        sup1.type = "supervisor"
-        sup1.save()
-
         course = models.Course()
         course.num_labs = 0
-        course.current_num_TA = 0
+        course.current_num_TA = 1
         course.num_lectures = 1
-        course.instructor = "DEFAULT"
         course.course_id = "301"
         course.course_department = "COMPSCI"
         course.save()
+
+        inscourse = models.InstructorCourse()
+        inscourse.instructor = inst1
+        inscourse.course = course
+        inscourse.save()
 
         tacourse = models.TACourse()
         tacourse.TA = ta1
@@ -614,18 +525,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "admin@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(inst1.email, ad1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_assign_improper_sup_ins(self):
         sup1 = models.User()
@@ -643,19 +545,18 @@ class AssignTaTests(TestCase):
         inst1.type = "instructor"
         inst1.save()
 
-        sup1 = models.User()
-        sup1.email = "ta_assign_super@uwm.edu"
-        sup1.type = "supervisor"
-        sup1.save()
-
         course = models.Course()
         course.num_labs = 0
-        course.current_num_TA = 0
+        course.current_num_TA = 1
         course.num_lectures = 1
-        course.instructor = "DEFAULT"
         course.course_id = "301"
         course.course_department = "COMPSCI"
         course.save()
+
+        inscourse = models.InstructorCourse()
+        inscourse.instructor = inst1
+        inscourse.course = course
+        inscourse.save()
 
         tacourse = models.TACourse()
         tacourse.TA = ta1
@@ -666,18 +567,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "sup@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(inst1.email, sup1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_assign_sup_sup(self):
 
@@ -715,17 +607,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta_assign_super@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "no such ta")
+        response = Commands.assign_ta_to_lablec(sup1.email, sup1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "no such ta")
 
     def test_not_assigned_to_course_ins(self):
         ta1 = models.User()
@@ -765,17 +649,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor3@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "You are not assigned to this course")
+        response = Commands.assign_ta_to_lablec(inst3.email, ta1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "You are not assigned to this course")
 
     def test_ta_not_assigned_sup(self):
         ta1 = models.User()
@@ -816,17 +692,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "302",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA")
-        self.assertContains(response, "TA not assigned to this course!")
+        response = Commands.assign_ta_to_lablec(sup1.email, ta1.email, course1.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA not assigned to this course!")
 
     def test_ta_not_assigned_ins(self):
         ta1 = models.User()
@@ -875,17 +743,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "302",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "TA not assigned to this course!")
+        response = Commands.assign_ta_to_lablec(inst1.email, ta1.email, course1.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA not assigned to this course!")
 
     def test_no_lab_or_lec_ins(self):
         ta1 = models.User()
@@ -920,17 +780,9 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lab_section = "801"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "804"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "No Such Lab or Lecture")
+        response = Commands.assign_ta_to_lablec(inst1.email, ta1.email, course.course_id, "804",
+                                                course.course_department)
+        self.assertEqual(response, "No Such Lab or Lecture")
 
     def test_no_such_lab_or_lec_sup(self):
         ta1 = models.User()
@@ -962,17 +814,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "404"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA")
-        self.assertContains(response, "No Such Lab or Lecture")
+        response = Commands.assign_ta_to_lablec(sup1.email, ta1.email, course.course_id, "804",
+                                                course.course_department)
+        self.assertEqual(response, "No Such Lab or Lecture")
 
     def test_invalid_lec_assign_sup(self):
         ta1 = models.User()
@@ -1004,17 +848,9 @@ class AssignTaTests(TestCase):
         lec.lecture_section = "401"
         lec.save()
 
-        client = Client()
-        session = client.session
-        session['email'] = 'ta_assign_super@uwm.edu'
-        session['type'] = 'supervisor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA")
-        self.assertContains(response, "TA cannot be assigned to this lecture(labs exist)!")
+        response = Commands.assign_ta_to_lablec(sup1.email, ta1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA cannot be assigned to this lecture(labs exist)!")
 
     def test_invalid_lec_assign_ins(self):
         ta1 = models.User()
@@ -1049,14 +885,6 @@ class AssignTaTests(TestCase):
         lec.course = course
         lec.lecture_section = "401"
         lec.save()
-        client = Client()
-        session = client.session
-        session['email'] = 'instructor@uwm.edu'
-        session['type'] = 'instructor'
-        session.save()
-        response = client.post('/assign_ta_lablec/', data={'email': "ta@uwm.edu", 'course_id': "301",
-                                                           'course_department': "COMPSCI", 'course_section': "401"},
-                               follow="true")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Assign TA to Labs/Lectures")
-        self.assertContains(response, "TA cannot be assigned to this lecture(labs exist)!")
+        response = Commands.assign_ta_to_lablec(inst1.email, ta1.email, course.course_id, lec.lecture_section,
+                                                course.course_department)
+        self.assertEqual(response, "TA cannot be assigned to this lecture(labs exist)!")
