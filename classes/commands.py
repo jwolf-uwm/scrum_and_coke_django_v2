@@ -203,8 +203,10 @@ class Commands:
             return "Course ID must be 3 digits long and between 101 and 999"
         if not section_id.isdigit():
             return "Section ID must be a number"
-        if int(section_id) < 100 or int(section_id) > 999:
-            return "Section ID must be 3 digits long and between 100 and 999"
+        if len(section_id) != 3:
+            return "Section ID must be 3 digits long"
+        if int(section_id) < 1 or int(section_id) > 999:
+            return "Section ID must be between 001 and 999"
         try:
             course = models.Course.objects.get(course_department=department, course_id=course_id)
         except models.Course.DoesNotExist:
