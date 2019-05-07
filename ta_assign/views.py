@@ -19,12 +19,14 @@ class Index(View):
 # Login
 class Login(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if request.session.get("email"):
             return redirect("index1")
 
         return render(request, "main/login.html")
 
     def post(self, request):
+        request.session.set_expiry(300)
         username = request.POST["email"]
         password = request.POST["password"]
         user = models.User.objects.all().filter(email=username)
@@ -41,6 +43,7 @@ class Login(View):
 # Logout
 class Logout(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             return redirect("index1")
         username = request.session.get("email")
@@ -54,7 +57,7 @@ class CreateAccount(View):
 
     @staticmethod
     def get(request):
-
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -69,7 +72,7 @@ class CreateAccount(View):
 
     @staticmethod
     def post(request):
-
+        request.session.set_expiry(300)
         account_email = request.POST["email"]
         account_password = request.POST["password"]
         account_type = request.POST["type"]
@@ -86,6 +89,7 @@ class CreateAccount(View):
 # Create Course
 class CreateCourse(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -99,6 +103,7 @@ class CreateCourse(View):
         return render(request, 'main/create_course.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
         num_lectures = request.POST["num_lectures"]
@@ -119,7 +124,7 @@ class AccessInfo(View):
 
     @staticmethod
     def get(request):
-
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -142,6 +147,7 @@ class AccessInfo(View):
 
 class CourseView(View):
     def get(self, request, **kwargs):
+        request.session.set_expiry(300)
         course_dept_id = self.kwargs["course_dept_id"]
 
         course = models.Course.objects.get(course_dept_id=course_dept_id)
@@ -164,6 +170,7 @@ class CourseView(View):
 
 class InstructorView(View):
     def get(self, request, **kwargs):
+        request.session.set_expiry(300)
         instructor_email = self.kwargs["instructor_email"]
 
         instructor = models.User.objects.get(email=instructor_email)
@@ -184,6 +191,7 @@ class InstructorView(View):
 
 class TAView(View):
     def get(self, request, **kwargs):
+        request.session.set_expiry(300)
         ta_email = self.kwargs["ta_email"]
 
         ta = models.User.objects.get(email=ta_email)
@@ -210,6 +218,7 @@ class TAView(View):
 # Edit Account
 class EditAccount(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -223,6 +232,7 @@ class EditAccount(View):
         return render(request, 'main/edit_account.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         email = request.POST["email"]
         field = request.POST["field"]
         data = request.POST["data"]
@@ -242,6 +252,7 @@ class EditInfo(View):
 
     @staticmethod
     def get(request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -254,6 +265,7 @@ class EditInfo(View):
 
     @staticmethod
     def post(request):
+        request.session.set_expiry(300)
         email = request.POST["email"]
         password = request.POST["password"]
         name = request.POST["name"]
@@ -315,6 +327,7 @@ class EditInfo(View):
 # Edit Lecture/Lab
 class EditLecLab(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -328,6 +341,7 @@ class EditLecLab(View):
         return render(request, 'main/edit_lec_lab.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         department = request.POST["course_department"]
         course_id = request.POST["course_id"]
         section_type = request.POST["section"]
@@ -349,6 +363,7 @@ class EditLecLab(View):
 
 class AssignInstructorToCourse(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -359,6 +374,7 @@ class AssignInstructorToCourse(View):
         return render(request, 'main/assign_instructor.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         email1 = request.POST["email"]
         course_department = request.POST["course_department"]
         course_id = request.POST["course_id"]
@@ -374,6 +390,7 @@ class AssignInstructorToCourse(View):
 # Assign TA
 class AssignTAToCourse(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -384,6 +401,7 @@ class AssignTAToCourse(View):
         return render(request, 'main/assign_ta.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         email = request.POST["email"]
         course_id = request.POST["course_id"]
         course_department = request.POST["course_department"]
@@ -397,6 +415,7 @@ class AssignTAToCourse(View):
 
 class AssignInstructorToLecture(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -407,6 +426,7 @@ class AssignInstructorToLecture(View):
         return render(request, 'main/assign_instructor_lec.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         email = request.POST["email"]
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
@@ -421,6 +441,7 @@ class AssignInstructorToLecture(View):
 
 class AssignTAToLabLec(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -431,6 +452,7 @@ class AssignTAToLabLec(View):
         return render(request, 'main/assign_ta_lablec.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         ins = request.session.get("email")
         email = request.POST["email"]
         course_id = request.POST["course_id"]
@@ -448,7 +470,7 @@ class AssignTAToLabLec(View):
 class ViewCourseAssignments(View):
 
     def get(self, request):
-
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -469,7 +491,7 @@ class ViewTAAssign(View):
 
     @staticmethod
     def get(request):
-
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -504,6 +526,7 @@ class ViewTAAssign(View):
 
 class DeleteAccount(View):
     def get(self, request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
@@ -516,6 +539,7 @@ class DeleteAccount(View):
         return render(request, 'main/delete_account.html')
 
     def post(self, request):
+        request.session.set_expiry(300)
         username = request.POST["email"]
         response = Commands.delete_account(username)
 
@@ -532,6 +556,7 @@ class ContactInfo(View):
 
     @staticmethod
     def get(request):
+        request.session.set_expiry(300)
         if not request.session.get("email"):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
