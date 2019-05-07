@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>Contact Info</h1>
+
+    <div class="access_info">
+
+        <h2>Administrator</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>Address</td>
+            </tr>
+            <tr>
+                <td>{{ admin.name }}</td>
+                <td>{{ admin.email }}</td>
+                <td>{{ admin.phone }}</td>
+                <td>{{ admin.address }}</td>
+            </tr>
+        </table>
+
+        <h2>Supervisor</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>Address</td>
+            </tr>
+            <tr>
+                <td>{{ super.name }}</td>
+                <td>{{ super.email }}</td>
+                <td>{{ super.phone }}</td>
+                <td>{{ super.address }}</td>
+            </tr>
+        </table>
+
+        <h2>Instructors</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>Address</td>
+            </tr>
+            {% for instructor in instructors %}
+            <tr>
+                <td>{{ instructor.name }}</td>
+                <td>{{ instructor.email }}</td>
+                <td>{{ instructor.phone }}</td>
+                <td>{{ instructor.address }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>TAs</h2>
+        <table>
+            <tr class="heading">
+                <td>Name</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>Address</td>
+            </tr>
+            {% for ta in tas %}
+            <tr>
+                <td>{{ ta.name }}</td>
+                <td>{{ ta.email }}</td>
+                <td>{{ ta.phone }}</td>
+                <td>{{ ta.address }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+{% endblock content %}

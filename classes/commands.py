@@ -433,9 +433,10 @@ class Commands:
     @staticmethod
     def view_course_assignments(instructor):
         string_list = ""
-        courses = models.Course.objects.filter(instructor=instructor)
+        ins = models.User.objects.get(email=instructor)
+        courses = models.InstructorCourse.objects.filter(instructor=ins)
         for course in courses:
-            string_list = string_list + course.course_id + " \n"
+            string_list = string_list + course.course.course_department+": "+ str(course.course.course_id) + " \n"
 
         return string_list
 
@@ -477,7 +478,7 @@ class Commands:
             if check_lec is not None:
                 if check_course.num_labs is not 0:
                     return "TA cannot be assigned to this lecture(labs exist)!"
-                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
+                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(TA=email)
                 return "TA Assigned to Lecture!"
 
             try:
@@ -513,7 +514,7 @@ class Commands:
             if check_lec is not None:
                 if check_course.num_labs is not 0:
                     return "TA cannot be assigned to this lecture(labs exist)!"
-                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(instructor=email)
+                models.Lecture.objects.filter(course=check_course, lecture_section=course_section).update(TA=email)
                 return "TA Assigned to Lecture!"
             else:
                 try:
@@ -550,8 +551,11 @@ class Commands:
 
     # Read Public Contact Info Commands
     @staticmethod
-    def read_public(email):
-        return
+    # returns a list with all the users
+    # it's up to the view to format this nicely
+    def read_public():
+        users = models.User.objects.all()
+        return users
 
     # Delete Account
     @staticmethod
