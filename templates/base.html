@@ -14,9 +14,11 @@
 <body>
     <h1>TA Assigninator 5000</h1>
     <div class="navbar">
+
             <a href="/index">Home</a>
             <a href="/login">Login</a>
             <a href="/logout">Logout</a>
+
             <div class="dropdown">
                 <button class="dropbtn">Create
                     <i class="fa fa-caret-down"></i>
@@ -26,7 +28,7 @@
                     <a href="/create_course">Create Course</a>
                 </div>
             </div>
-            <a href="/access_info">Access Info</a>
+
             <div class="dropdown">
                 <button class="dropbtn">Edit
                     <i class="fa fa-caret-down"></i>
@@ -37,20 +39,41 @@
                     <a href="/edit_lec_lab">Edit Lecture/Lab</a>
                 </div>
             </div>
+
             <div class="dropdown">
                 <button class="dropbtn">Assign
                     <i class="fa fa-caret-down"></i>
                 </button>
                 <div class="dropdown-content">
-                    <a href="/assign_instructor">Assign Instructor(Course)</a>
-                    <a href="/assign_ta">Assign TA(Course)</a>
-                    <a href="/assign_instructor_lec">Assign Instructor(Lecture)</a>
-                    <a href="/assign_ta_lablec">Assign TA(Lab/Lecture)</a>
+                    <a href="/assign_instructor">Assign Instructor (Course)</a>
+                    <a href="/assign_ta">Assign TA (Course)</a>
+                    <a href="/assign_instructor_lec">Assign Instructor (Lecture)</a>
+                    <a href="/assign_ta_lablec">Assign TA (Lab/Lecture)</a>
                 </div>
             </div>
-            <a href="/view_course_assignments">View Course Assignments</a>
-            <a href="/view_ta_assign">View TA Assign</a>
+
+            <div class="dropdown">
+                <button class="dropbtn">Info
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/access_info">Access Info</a>
+                    <a href="/contact_info">Contact Info</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropbtn">View
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/view_course_assignments">View Course Assignments</a>
+                    <a href="/view_ta_assign">View TA Assign</a>
+                </div>
+            </div>
+
             <a href="/delete_account">Delete Account</a>
+
     </div>
     {% block content %}{% endblock content %}
 </body>
