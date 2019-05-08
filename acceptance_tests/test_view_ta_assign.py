@@ -83,9 +83,8 @@ class TestViewTAAssign(TestCase):
 
         response = client.get('/view_ta_assign/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        info_string = str(all_messages[0])
-        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\n")
+        response = client.get('/ta/ta@uwm.edu/')
+        self.assertContains(response, "TA: DEFAULT")
 
     def test_view_ta_assign_instructor_no_ta(self):
 
@@ -116,9 +115,9 @@ class TestViewTAAssign(TestCase):
 
         response = client.get('/view_ta_assign/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        info_string = str(all_messages[0])
-        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\n")
+        response = client.get('/ta/ta@uwm.edu/')
+        self.assertContains(response, "TA: DEFAULT")
+        self.assertNotContains(response, "COMPSCI100")
 
     def test_view_ta_assign_inst_one_course(self):
 
@@ -132,11 +131,17 @@ class TestViewTAAssign(TestCase):
         ta1.type = "ta"
         ta1.save()
 
-        course1 = models.TACourse()
-        course1.course.course_dept_id_id = "CS101-401"
-        course1.course.instructor = "instructor@uwm.edu"
-        course1.TA = ta1
+        course1 = models.Course()
+        course1.course_department = "COMPSCI"
+        course1.course_id = "122"
+        course1.course_dept_id = "COMPSCI122"
+        course1.instructor = "instructor@uwm.edu"
         course1.save()
+
+        ta1_course1 = models.TACourse()
+        ta1_course1.TA = ta1
+        ta1_course1.course = course1
+        ta1_course1.save()
 
         client = Client()
         session = client.session
@@ -146,9 +151,9 @@ class TestViewTAAssign(TestCase):
 
         response = client.get('/view_ta_assign/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        info_string = str(all_messages[0])
-        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\tCourse: CS101-401\n\n")
+        response = client.get('/ta/ta@uwm.edu/')
+        self.assertContains(response, "TA: DEFAULT")
+        self.assertContains(response, "COMPSCI122")
 
     def test_view_ta_assign_ta_one_course(self):
 
@@ -162,11 +167,17 @@ class TestViewTAAssign(TestCase):
         inst1.type = "instructor"
         inst1.save()
 
-        course1 = models.TACourse()
-        course1.course.course_dept_id = "CS101-401"
-        course1.course.instructor = "instructor@uwm.edu"
-        course1.TA = ta1
+        course1 = models.Course()
+        course1.course_department = "COMPSCI"
+        course1.course_id = "100"
+        course1.course_dept_id = "COMPSCI100"
+        course1.instructor = "instructor@uwm.edu"
         course1.save()
+
+        ta1_course1 = models.TACourse()
+        ta1_course1.TA = ta1
+        ta1_course1.course = course1
+        ta1_course1.save()
 
         client = Client()
         session = client.session
@@ -176,9 +187,9 @@ class TestViewTAAssign(TestCase):
 
         response = client.get('/view_ta_assign/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        info_string = str(all_messages[0])
-        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\tCourse: CS101-401\n\n")
+        response = client.get('/ta/ta@uwm.edu/')
+        self.assertContains(response, "TA: DEFAULT")
+        self.assertContains(response, "COMPSCI100")
 
     def test_view_ta_assign_all_the_things(self):
 
@@ -207,17 +218,29 @@ class TestViewTAAssign(TestCase):
         inst2.type = "instructor"
         inst2.save()
 
-        course1 = models.TACourse()
-        course1.course.course_dept_id = "CS101-401"
-        course1.course.instructor = "inst1@uwm.edu"
-        course1.TA = ta1
+        course1 = models.Course()
+        course1.course_department = "COMPSCI"
+        course1.course_id = "101"
+        course1.course_dept_id = "COMPSCI101"
+        course1.instructor = "inst1@uwm.edu"
         course1.save()
 
-        course2 = models.TACourse()
-        course2.course.course_dept_id = "CS102-402"
-        course2.course.instructor = "inst2@uwm.edu"
-        course2.TA = ta2
+        ta1_course1 = models.TACourse()
+        ta1_course1.TA = ta1
+        ta1_course1.course = course1
+        ta1_course1.save()
+
+        course2 = models.Course()
+        course2.course_department = "COMPSCI"
+        course2.course_id = "102"
+        course2.course_dept_id = "COMPSCI102"
+        course2.instructor = "inst2@uwm.edu"
         course2.save()
+
+        ta2_course2 = models.TACourse()
+        ta2_course2.TA = ta2
+        ta2_course2.course = course2
+        ta2_course2.save()
 
         client = Client()
         session = client.session
@@ -227,10 +250,18 @@ class TestViewTAAssign(TestCase):
 
         response = client.get('/view_ta_assign/')
         self.assertEqual(response.status_code, 200)
-        all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        info_string = str(all_messages[0])
-        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\n"
-                                      "TA: DEFAULT | ta1@uwm.edu | 000.000.0000\n"
-                                      "\tCourse: CS101-401\n\n"
-                                      "TA: DEFAULT | ta2@uwm.edu | 000.000.0000\n"
-                                      "\tCourse: CS102-401\n\n")
+
+        response = client.get('/ta/ta@uwm.edu/')
+        self.assertContains(response, "TA: DEFAULT")
+        self.assertNotContains(response, "COMPSCI101")
+        self.assertNotContains(response, "COMPSCI102")
+
+        response = client.get('/ta/ta1@uwm.edu/')
+        self.assertContains(response, "TA: DEFAULT")
+        self.assertContains(response, "COMPSCI101")
+        self.assertNotContains(response, "COMPSCI102")
+
+        response = client.get('/ta/ta2@uwm.edu/')
+        self.assertContains(response, "TA: DEFAULT")
+        self.assertContains(response, "COMPSCI102")
+        self.assertNotContains(response, "COMPSCI101")
