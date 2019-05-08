@@ -65,11 +65,16 @@ class TestViewTAAssign(TestCase):
         ta1.type = "ta"
         ta1.save()
 
-        course1 = models.TACourse()
-        course1.course.course_department = "COMPSCI"
-        course1.course.course_id = "100"
-        course1.TA = ta1
+        course1 = models.Course()
+        course1.course_department = "COMPSCI"
+        course1.course_id = "100"
+        course1.course_dept_id = "COMPSCI100"
         course1.save()
+
+        ta1_course1 = models.TACourse()
+        ta1_course1.course = course1
+        ta1_course1.TA = ta1
+        ta1_course1.save()
 
         lists = Commands.view_ta_assign()
         self.assertEquals(lists, "TA: DEFAULT | ta1@uwm.edu | 000.000.0000\n\tCourse: COMPSCI100\n\n")
@@ -110,11 +115,16 @@ class TestViewTAAssign(TestCase):
         ta1.type = "ta"
         ta1.save()
 
-        course1 = models.TACourse()
-        course1.course.course_department = "COMPSCI"
-        course1.course.course_id = "100"
-        course1.TA = ta1
+        course1 = models.Course()
+        course1.course_department = "COMPSCI"
+        course1.course_id = "100"
+        course1.course_dept_id = "COMPSCI100"
         course1.save()
+
+        ta1_course1 = models.TACourse()
+        ta1_course1.course = course1
+        ta1_course1.TA = ta1
+        ta1_course1.save()
 
         ta2 = models.User()
         ta2.email = "ta2@uwm.edu"
@@ -122,11 +132,16 @@ class TestViewTAAssign(TestCase):
         ta2.type = "ta"
         ta2.save()
 
-        course2 = models.TACourse()
-        course2.course.course_department = "COMPSCI"
-        course2.course.course_id = "101"
-        course2.TA = ta2
+        course2 = models.Course()
+        course2.course_department = "COMPSCI"
+        course2.course_id = "101"
+        course2.course_dept_id = "COMPSCI101"
         course2.save()
+
+        ta2_course2 = models.TACourse()
+        ta2_course2.course = course2
+        ta2_course2.TA = ta2
+        ta2_course2.save()
 
         ta3 = models.User()
         ta3.email = "ta3@uwm.edu"
@@ -135,6 +150,6 @@ class TestViewTAAssign(TestCase):
         ta3.save()
 
         lists = Commands.view_ta_assign()
-        self.assertEquals(lists, "TA: DEFAULT | ta1@uwm.edu | 000.000.0000\n\tCourse: COMPSCI100\n"
-                                 "TA: DEFAULT | ta2@uwm.edu | 000.000.0000\n\tCourse: COMPSCI101\n"
+        self.assertEquals(lists, "TA: DEFAULT | ta1@uwm.edu | 000.000.0000\n\tCourse: COMPSCI100\n\n"
+                                 "TA: DEFAULT | ta2@uwm.edu | 000.000.0000\n\tCourse: COMPSCI101\n\n"
                                  "TA: DEFAULT | ta3@uwm.edu | 000.000.0000\n\n")
