@@ -42,3 +42,49 @@ class DeleteAccountTests(TestCase):
         self.assertEqual(all_messages[0].tags, "error")
         self.assertEqual(all_messages[0].message, "Please login first.")
         self.assertEqual(response.get('location'), '/login/')
+
+    def test_delete_account_Instructor(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post("/delete_account/", data={'email': "instructor@uwm.edu", 'password': "password"},
+                               follow="true")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        self.assertEqual(all_messages[0].message, "instructor@uwm.edu has been deleted successfully")
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_account_TA(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post("/delete_account/", data={'email': "ta@uwm.edu", 'password': "password"}, follow="true")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        self.assertEqual(all_messages[0].message, "ta@uwm.edu has been deleted successfully")
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_account_wrong_TA(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post("/delete_account/", data={'email': "ta3@uwm.edu", 'password': "password"}, follow="true")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        self.assertEqual(all_messages[0].message, "Such User does not exist")
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_account_wrong_Instructor(self):
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post("/delete_account/", data={'email': "instructor@uwm.edu", 'password': "password"},
+                               follow="true")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        self.assertEqual(all_messages[0].message, "instructor@uwm.edu has been deleted successfully")
+        self.assertEqual(response.status_code, 200)
